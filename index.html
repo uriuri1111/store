@@ -1,35 +1,913 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>בדיקת תת דומיין</title>
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      color: #1f2937;
-      text-align: center;
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>בת המצווה של יעל</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;800&family=Secular+One&display=swap">
+<style>
+  /* Concept: a night-time party stage framed by a quiet, soft UI. All the colour lives on the stage; panels stay calm. */
+  :root {
+    --bg: #eef0fa;
+    --surface: #ffffff;
+    --surface-2: #f4f5fc;
+    --ink: #1a1733;
+    --muted: #5d5a7c;
+    --line: #dcdff0;
+    --accent: #d11a67;
+    --accent-ink: #ffffff;
+    --gold: #f5b301;
+    --good: #12805c;
+    --bad: #c42b2b;
+    --shadow: 0 1px 0 rgba(26, 23, 51, .04), 0 18px 40px -22px rgba(40, 30, 110, .35);
+    --font-body: "Heebo", "Segoe UI", Arial, sans-serif;
+    --font-display: "Secular One", "Heebo", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f0c26; --surface: #1a1740; --surface-2: #231f52; --ink: #f2effd; --muted: #aba6d2; --line: #342f6c;
+      --accent: #ff5a98; --accent-ink: #25041b; --gold: #ffc83d; --good: #4fd6a2; --bad: #ff7a7a;
+      --shadow: 0 1px 0 rgba(255, 255, 255, .03), 0 18px 40px -22px rgba(0, 0, 0, .8); color-scheme: dark;
     }
-    .box {
-      background: #fff;
-      padding: 40px 50px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-    h1 { margin: 0 0 10px; color: #16a34a; }
-    p { margin: 0; font-size: 18px; }
-  </style>
-</head>
-<body>
-  <div class="box">
-    <h1>התת דומיין עובד! ✅</h1>
-    <p>הדף הזה נטען בהצלחה.</p>
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f0c26; --surface: #1a1740; --surface-2: #231f52; --ink: #f2effd; --muted: #aba6d2; --line: #342f6c;
+    --accent: #ff5a98; --accent-ink: #25041b; --gold: #ffc83d; --good: #4fd6a2; --bad: #ff7a7a;
+    --shadow: 0 1px 0 rgba(255, 255, 255, .03), 0 18px 40px -22px rgba(0, 0, 0, .8); color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background:
+      radial-gradient(800px 420px at 92% -8%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 65%),
+      radial-gradient(700px 480px at -8% 12%, color-mix(in srgb, #3ddcc2 18%, transparent), transparent 65%),
+      var(--bg);
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    padding-block: 22px 34px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; display: grid; gap: 20px; }
+
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 20px; }
+  .eyebrow { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 13px; letter-spacing: .06em; color: var(--muted); margin-bottom: 6px; }
+  .dots { display: flex; gap: 5px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(34px, 7vw, 58px); line-height: 1.02; margin: 0; text-wrap: balance; }
+  .sub { color: var(--muted); margin: 8px 0 0; max-width: 54ch; }
+  .chip { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px; padding: 7px 14px; border-radius: 99px; background: var(--surface); color: var(--good); box-shadow: var(--shadow); white-space: nowrap; }
+  .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: pulse 1.8s ease-in-out infinite; }
+  .chip.closed { color: var(--bad); }
+  .chip.closed::before { animation: none; }
+  @keyframes pulse { 50% { opacity: .35; transform: scale(.8); } }
+
+  .banner { display: none; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 20px; background: linear-gradient(120deg, #ffd34d, #ffb02e); color: #2a1d00; box-shadow: var(--shadow); }
+  .banner.on { display: flex; }
+  .banner svg { flex: none; width: 46px; height: 46px; }
+  .banner .big { display: block; font-family: var(--font-display); font-weight: 400; font-size: clamp(20px, 4.4vw, 30px); line-height: 1.12; overflow-wrap: anywhere; }
+  .banner small { display: block; font-weight: 600; opacity: .8; font-size: 13.5px; }
+
+  .main { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 22px; align-items: start; }
+  @media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } .stage { max-width: 480px; margin-inline: auto; width: 100%; } }
+  .stage { display: grid; gap: 12px; }
+
+  .canvaswrap { position: relative; border-radius: 26px; overflow: hidden; background: #0f0b2e; box-shadow: 0 30px 60px -30px rgba(60, 20, 140, .7), 0 0 0 1px rgba(255, 255, 255, .06); }
+  canvas { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; touch-action: none; direction: ltr; }
+
+  .hudbar { position: absolute; inset: 0 0 auto 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 14px 16px 30px; pointer-events: none; color: #fff; background: linear-gradient(to bottom, rgba(8, 4, 30, .78), rgba(8, 4, 30, 0)); }
+  .hs small, .ht small { display: block; font-size: 11px; font-weight: 800; letter-spacing: .08em; color: rgba(255, 255, 255, .65); }
+  .hs b { font-family: var(--font-display); font-weight: 400; font-size: 38px; line-height: 1; font-variant-numeric: tabular-nums; text-shadow: 0 2px 14px rgba(255, 90, 160, .55); }
+  .hc { display: grid; justify-items: center; gap: 5px; padding-top: 2px; }
+  .mult { font-family: var(--font-display); font-size: 22px; line-height: 1; color: #ffd34d; text-shadow: 0 0 14px rgba(255, 200, 60, .6); }
+  .cbar { width: 64px; height: 6px; border-radius: 9px; background: rgba(255, 255, 255, .18); overflow: hidden; }
+  .cbar i { display: block; height: 100%; width: calc(var(--cp, 0) * 100%); background: linear-gradient(90deg, #3ddcc2, #ffd34d); border-radius: 9px; transition: width .12s; }
+  .ht { text-align: left; }
+  .ht b { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .ht.warn b { color: #ff8a8a; }
+  .hh { position: absolute; inset: auto 0 6px 0; display: flex; justify-content: center; gap: 5px; font-size: 20px; line-height: 1; color: #ff5a8a; text-shadow: 0 0 12px rgba(255, 70, 130, .7); }
+  .hh .off { color: rgba(255, 255, 255, .22); text-shadow: none; }
+
+  .overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(10, 6, 36, .7); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); text-align: center; color: #f6f2ff; }
+  .overlay[hidden] { display: none !important; }
+  .ovcard { max-width: 380px; }
+  .overlay h2 { font-family: var(--font-display); font-weight: 400; font-size: 40px; margin: 0 0 10px; line-height: 1.05; background: linear-gradient(90deg, #ffd34d, #ff6fa8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .overlay p { margin: 6px 0; color: #e6e0ff; }
+  .overlay .big { font-family: var(--font-display); font-size: 72px; line-height: 1; color: #fff; margin: 4px 0; font-variant-numeric: tabular-nums; text-shadow: 0 0 30px rgba(255, 110, 170, .7); }
+  .legend { display: grid; gap: 7px; margin: 14px 0 6px; text-align: right; font-size: 14px; }
+  .legend div { display: flex; align-items: center; gap: 10px; }
+  .legend i { flex: none; width: 12px; height: 12px; border-radius: 50%; }
+  .ovbtn { margin-top: 14px; padding: 13px 34px; font-size: 19px; border: 0; border-radius: 99px; color: #25041b; background: linear-gradient(135deg, #ffd34d, #ff6fa8); box-shadow: 0 10px 30px -8px rgba(255, 100, 160, .75); }
+  .ovbtn:hover:not(:disabled) { filter: brightness(1.08); }
+
+  button { font-family: inherit; font-size: 15px; font-weight: 800; cursor: pointer; border-radius: 99px; padding: 10px 18px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); transition: border-color .15s, transform .08s; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:active:not(:disabled) { transform: scale(.97); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  button.danger { border-color: var(--bad); color: var(--bad); }
+  .blast { position: relative; overflow: hidden; width: 100%; padding: 14px 18px; background: var(--surface); box-shadow: var(--shadow); }
+  .blast i { position: absolute; inset: 0 0 0 auto; width: calc(var(--p, 0) * 100%); background: linear-gradient(90deg, color-mix(in srgb, #3ddcc2 45%, transparent), color-mix(in srgb, var(--gold) 65%, transparent)); transition: width .15s; }
+  .blast span { position: relative; }
+  .blast kbd { font-family: inherit; font-size: 12px; padding: 1px 8px; border-radius: 6px; background: var(--surface-2); margin-inline-start: 6px; }
+  .blast.ready { border-color: var(--gold); }
+  .row2 { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .hint { color: var(--muted); font-size: 13px; margin: 0; flex: 1 1 200px; }
+  #muteBtn { padding: 7px 14px; font-size: 13px; }
+
+  .side { display: grid; gap: 18px; }
+  .card { background: var(--surface); border-radius: 22px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .card h2 { font-family: var(--font-display); font-weight: 400; font-size: 24px; margin: 0 0 12px; }
+  .field { display: grid; gap: 6px; margin-bottom: 14px; }
+  .field label, .field .lbl { font-weight: 800; font-size: 13px; color: var(--muted); }
+  input[type="text"] { font-family: inherit; font-size: 16px; padding: 12px 14px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--surface-2); color: var(--ink); width: 100%; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+  .swatches input { position: absolute; opacity: 0; pointer-events: none; }
+  .swatches label { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid var(--surface); box-shadow: 0 0 0 1.5px var(--line); transition: transform .1s; }
+  .swatches input:checked + label { box-shadow: 0 0 0 3px var(--ink); transform: scale(1.08); }
+  .swatches input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .me { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .avatar { flex: none; width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-size: 24px; color: #1a1733; }
+  .nick { font-weight: 800; font-size: 20px; overflow-wrap: anywhere; line-height: 1.2; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .stats div { background: var(--surface-2); border-radius: 14px; padding: 10px 14px; }
+  .stats b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 28px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .stats span { font-size: 12px; color: var(--muted); }
+  .note { color: var(--muted); font-size: 13.5px; margin: 0 0 12px; }
+  .note.warn { color: var(--bad); }
+
+  ol.board { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  ol.board li { display: grid; grid-template-columns: 34px 30px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 12px 8px 14px; border-radius: 16px; background: linear-gradient(to left, color-mix(in srgb, var(--c, #ff4f93) 26%, transparent) var(--w, 0%), transparent var(--w, 0%)), var(--surface-2); }
+  ol.board li.me { box-shadow: inset 0 0 0 2px var(--accent); }
+  ol.board .rk { font-family: var(--font-display); font-size: 17px; text-align: center; border-radius: 50%; width: 30px; height: 30px; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+  ol.board li:nth-child(1) .rk { background: linear-gradient(135deg, #ffe27a, #f5a800); color: #3a2600; }
+  ol.board li:nth-child(2) .rk { background: linear-gradient(135deg, #f1f3f8, #aeb4c6); color: #2b2f3d; }
+  ol.board li:nth-child(3) .rk { background: linear-gradient(135deg, #f0b98a, #b9702f); color: #3a1d06; }
+  ol.board .av { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; color: #1a1733; }
+  ol.board .nm { overflow-wrap: anywhere; font-weight: 600; }
+  ol.board .sc { font-family: var(--font-display); font-size: 19px; font-variant-numeric: tabular-nums; }
+  .empty { display: block !important; color: var(--muted); text-align: center; padding: 18px 10px !important; background: var(--surface-2) !important; }
+  .admin { display: flex; flex-wrap: wrap; gap: 8px; }
+  @media (prefers-reduced-motion: reduce) { .chip::before { animation: none; } .blast i, .cbar i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <div class="eyebrow"><span class="dots"><i style="background:#ff4f93"></i><i style="background:#ffc83d"></i><i style="background:#3ddcc2"></i><i style="background:#7c8cff"></i><i style="background:#ff8a3d"></i></span>מרוץ המסיבה</div>
+      <h1>בת המצווה של יעל</h1>
+      <p class="sub">תפסו ממתקים ומתנות, התחמקו מהפצצות ושברו שיא. 60 שניות לכל משחק, ומי שבראש הטבלה בסוף ניצח.</p>
+    </div>
+    <div class="chip" id="chip">התחרות פתוחה</div>
+  </header>
+
+  <div class="banner" id="banner" role="status">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h20v12c0 7-4.5 12-10 12S14 25 14 18V6z" fill="#7a4a00"/><path d="M14 10H7c0 7 3 11 8 12M34 10h7c0 7-3 11-8 12" fill="none" stroke="#7a4a00" stroke-width="3" stroke-linecap="round"/><rect x="21" y="30" width="6" height="7" fill="#7a4a00"/><rect x="15" y="37" width="18" height="5" rx="2" fill="#7a4a00"/></svg>
+    <div><span class="big" id="bannerBig"></span><small id="bannerSmall"></small></div>
   </div>
-</body>
-</html>
+
+  <div class="main">
+    <section class="stage" aria-label="המשחק">
+      <div class="canvaswrap">
+        <canvas id="cv" aria-label="מסך המשחק"></canvas>
+        <div class="hudbar" aria-live="off">
+          <div class="hs"><small>ניקוד</small><b id="hScore">0</b></div>
+          <div class="hc"><span class="mult" id="hCombo">x1</span><div class="cbar"><i id="cFill"></i></div></div>
+          <div class="ht" id="hTimeBox"><small>שניות</small><b id="hTime">60</b></div>
+        </div>
+        <div class="hh" id="hHearts" aria-label="חיים"></div>
+        <div class="overlay" id="ov">
+          <div class="ovcard">
+            <h2 id="ovTitle">מוכנים?</h2>
+            <div id="ovBody"></div>
+            <button class="ovbtn" id="ovBtn">התחל</button>
+          </div>
+        </div>
+      </div>
+      <button class="blast" id="blast" disabled><i></i><span>פיצוץ קונפטי<kbd>רווח</kbd></span></button>
+      <div class="row2">
+        <p class="hint">הזיזו את המגש עם העכבר, האצבע או החצים.</p>
+        <button id="muteBtn" aria-pressed="false">צליל: פעיל</button>
+      </div>
+    </section>
+
+    <div class="side">
+      <section class="card" id="acct" aria-label="החשבון שלי"></section>
+      <section class="card" aria-label="טבלת הניקוד">
+        <h2>טבלת הניקוד</h2>
+        <div id="boardMsg" class="note"></div>
+        <ol class="board" id="board"></ol>
+      </section>
+      <section class="card" id="adminCard" hidden aria-label="ניהול התחרות">
+        <h2>ניהול התחרות</h2>
+        <p class="note">הכפתורים האלה מופיעים רק לבעלי הדף.</p>
+        <div class="admin">
+          <button class="primary" id="btnClose">סגירה והכרזת זוכה</button>
+          <button id="btnOpen">פתיחה מחדש</button>
+          <button class="danger" id="btnReset">איפוס ציונים</button>
+        </div>
+        <p class="note" id="adminMsg" style="margin:10px 0 0"></p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- helpers ---------- */
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, props, kids) {
+    var n = document.createElement(tag);
+    if (props) Object.keys(props).forEach(function (k) {
+      if (k === 'text') n.textContent = props[k];
+      else if (k === 'class') n.className = props[k];
+      else n.setAttribute(k, props[k]);
+    });
+    (kids || []).forEach(function (c) { n.appendChild(c); });
+    return n;
+  }
+  var PALETTE = ['#ff4f93', '#ffc83d', '#3ddcc2', '#7c8cff', '#ff8a3d', '#9be15d'];
+  function colorOf(c) { return PALETTE.indexOf(c) >= 0 ? c : PALETTE[0]; }
+  function initial(n) { var a = Array.from(String(n || '?')); return a.length ? a[0] : '?'; }
+  function rgba(hex, a) { var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
+
+  /* ---------- backend state ---------- */
+  var app = {
+    db: null, user: null, uid: null, isOwner: false, canWrite: null,
+    players: [], mine: null, mineLoaded: false, contest: { closed: false },
+    editing: false, queue: Promise.resolve(), loadTimer: null, acctSig: '', resetArmed: false
+  };
+
+  function playerRef() { return app.db.doc('players/' + app.uid); }
+  function contestRef() { return app.db.doc('meta/contest'); }
+  function sortedPlayers() {
+    return app.players.slice().sort(function (a, b) {
+      return (b.best || 0) - (a.best || 0) || (a.achievedAt || 0) - (b.achievedAt || 0);
+    });
+  }
+  function canSave() {
+    return !!(app.db && app.uid && app.mine && !app.contest.closed && app.canWrite !== false);
+  }
+
+  function initBackend() {
+    var c = window.claude;
+    if (!c || !c.use) { renderAll(); return; }
+    var p1 = c.use('user').catch(function () { return null; });
+    var p2 = c.use('db').catch(function () { return null; });
+    Promise.all([p1, p2]).then(function (r) {
+      app.user = r[0]; app.db = r[1];
+      var chain = Promise.resolve();
+      if (app.user) {
+        chain = Promise.all([app.user.id(), app.user.isOwner(), app.user.can('data.write')]).then(function (v) {
+          app.uid = v[0]; app.isOwner = v[1]; app.canWrite = v[2];
+        }).catch(function () {});
+      }
+      return chain;
+    }).then(function () {
+      if (!app.db) { renderAll(); return; }
+      app.loadTimer = setTimeout(function () {
+        $('boardMsg').textContent = 'הטבלה עדיין לא נטענה. ייתכן שאין חיבור, והנתונים יופיעו כשיחזור.';
+      }, 10000);
+      var clear = function () { clearTimeout(app.loadTimer); $('boardMsg').textContent = ''; };
+      app.db.collection('players').orderBy('best', 'desc').limit(100).onSnapshot(function (snap) {
+        app.players = snap.docs.map(function (d) { var o = d.data() || {}; o.id = d.id; return o; });
+        if (!snap.metadata.fromCache) clear();
+        renderBoard(); renderBanner();
+      }, function () { clearTimeout(app.loadTimer); $('boardMsg').textContent = 'אין גישה לטבלה בתצוגה הזו.'; });
+      app.db.doc('meta/contest').onSnapshot(function (snap) {
+        app.contest = snap.exists ? (snap.data() || { closed: false }) : { closed: false };
+        renderBanner(); renderAccount();
+      }, function () {});
+      if (app.uid) {
+        playerRef().onSnapshot(function (snap) {
+          app.mineLoaded = true;
+          app.mine = snap.exists ? snap.data() : null;
+          renderAccount();
+        }, function () { app.mineLoaded = true; renderAccount(); });
+      }
+      renderAll();
+    });
+  }
+
+  /* ---------- side panels ---------- */
+  function renderAll() { renderAccount(); renderBoard(); renderBanner(); }
+
+  function renderBanner() {
+    var chip = $('chip'), b = $('banner');
+    var closed = !!app.contest.closed;
+    chip.textContent = closed ? 'התחרות נסגרה' : 'התחרות פתוחה';
+    chip.className = 'chip' + (closed ? ' closed' : '');
+    var top = sortedPlayers()[0];
+    if (closed && app.contest.winnerNick) {
+      $('bannerBig').textContent = 'הזוכה: ' + app.contest.winnerNick;
+      $('bannerSmall').textContent = (app.contest.winnerScore || 0) + ' נקודות. כל הכבוד!';
+      b.className = 'banner on';
+    } else if (top && (top.best || 0) > 0) {
+      $('bannerBig').textContent = 'בראש הטבלה: ' + (top.nick || 'שחקן');
+      $('bannerSmall').textContent = (top.best || 0) + ' נקודות. עדיין אפשר לעקוף.';
+      b.className = 'banner on';
+    } else { b.className = 'banner'; }
+    $('adminCard').hidden = !(app.isOwner && app.db);
+  }
+
+  function renderBoard() {
+    var ol = $('board');
+    ol.textContent = '';
+    if (!app.db) {
+      ol.appendChild(el('li', { class: 'empty', text: 'הטבלה זמינה רק כשהדף נפתח דרך Claude.' }));
+      return;
+    }
+    var list = sortedPlayers().filter(function (p) { return (p.plays || 0) > 0 || (p.best || 0) > 0; });
+    if (!list.length) {
+      ol.appendChild(el('li', { class: 'empty', text: 'עדיין אין ציונים. מי שיפתח חשבון וישחק ראשון יופיע כאן.' }));
+      return;
+    }
+    var topBest = Math.max(1, list[0].best || 1);
+    list.forEach(function (p, i) {
+      var c = colorOf(p.color);
+      var pct = Math.max(6, Math.round((p.best || 0) / topBest * 100));
+      var li = el('li', { class: p.id === app.uid ? 'me' : '', style: '--c:' + c + ';--w:' + pct + '%' }, [
+        el('span', { class: 'rk', text: String(i + 1) }),
+        el('span', { class: 'av', style: 'background:' + c, text: initial(p.nick) }),
+        el('span', { class: 'nm', text: p.nick || 'שחקן' }),
+        el('span', { class: 'sc', text: String(p.best || 0) })
+      ]);
+      ol.appendChild(li);
+    });
+  }
+
+  function renderAccount() {
+    var box = $('acct');
+    var m = app.mine;
+    var sig = JSON.stringify([!!app.db, app.uid, app.mineLoaded, m && [m.nick, m.color, m.best, m.plays], app.editing, app.contest.closed, app.canWrite]);
+    if (sig === app.acctSig) return;
+    app.acctSig = sig;
+    box.textContent = '';
+    box.appendChild(el('h2', { text: 'החשבון שלי' }));
+    if (!app.db || !app.uid) {
+      box.appendChild(el('p', { class: 'note warn', text: 'בתצוגה הזו אי אפשר לפתוח חשבון ולשמור ציונים. אפשר לשחק לתרגול. כדי להתחרות, פתחו את הקישור מתוך Claude והתחברו.' }));
+      return;
+    }
+    if (app.canWrite === false) {
+      box.appendChild(el('p', { class: 'note warn', text: 'ההרשאה שלכם לדף היא צפייה בלבד, ולכן אי אפשר לשמור ציונים. בקשו מבעל הדף הרשאת תורם (Contributor).' }));
+    }
+    if (!app.mineLoaded) { box.appendChild(el('p', { class: 'note', text: 'טוען…' })); return; }
+    if (m && !app.editing) {
+      box.appendChild(el('div', { class: 'me' }, [
+        el('span', { class: 'avatar', style: 'background:' + colorOf(m.color), text: initial(m.nick) }),
+        el('span', { class: 'nick', text: m.nick || 'שחקן' })
+      ]));
+      box.appendChild(el('div', { class: 'stats' }, [
+        el('div', {}, [el('b', { text: String(m.best || 0) }), el('span', { text: 'שיא אישי' })]),
+        el('div', {}, [el('b', { text: String(m.plays || 0) }), el('span', { text: 'משחקים' })])
+      ]));
+      if (app.contest.closed) box.appendChild(el('p', { class: 'note warn', text: 'התחרות נסגרה. אפשר להמשיך לשחק, אבל הציון לא יישמר.' }));
+      var eb = el('button', { text: 'עריכת כינוי וצבע' });
+      eb.addEventListener('click', function () { app.editing = true; renderAccount(); });
+      box.appendChild(eb);
+      return;
+    }
+    box.appendChild(el('p', { class: 'note', text: m ? 'אפשר לשנות את הכינוי והצבע. הציון נשאר.' : 'פתחו חשבון עם כינוי וצבע, וכל משחק שתשחקו יירשם בטבלה.' }));
+    var inp = el('input', { type: 'text', id: 'nickIn', maxlength: '16', placeholder: 'למשל: הצל הכחול', autocomplete: 'off' });
+    inp.value = m ? (m.nick || '') : '';
+    box.appendChild(el('div', { class: 'field' }, [el('label', { for: 'nickIn', text: 'כינוי (עד 16 תווים)' }), inp]));
+    var sw = el('div', { class: 'swatches', role: 'radiogroup', 'aria-label': 'צבע' });
+    var cur = m ? colorOf(m.color) : PALETTE[0];
+    PALETTE.forEach(function (c, i) {
+      var r = el('input', { type: 'radio', name: 'clr', id: 'clr' + i, value: c });
+      if (c === cur) r.checked = true;
+      var l = el('label', { for: 'clr' + i, style: 'background:' + c, title: 'צבע ' + (i + 1) });
+      sw.appendChild(r); sw.appendChild(l);
+    });
+    box.appendChild(el('div', { class: 'field' }, [el('span', { class: 'lbl', text: 'צבע' }), sw]));
+    var msg = el('p', { class: 'note warn', 'aria-live': 'polite', style: 'margin:12px 0 0' });
+    var go = el('button', { class: 'primary', text: m ? 'שמירה' : 'פתיחת חשבון' });
+    go.addEventListener('click', function () {
+      var nick = inp.value.replace(/\s+/g, ' ').trim().slice(0, 16);
+      if (!nick) { msg.textContent = 'כתבו כינוי כדי להמשיך.'; return; }
+      var chosen = box.querySelector('input[name="clr"]:checked');
+      var color = chosen ? chosen.value : PALETTE[0];
+      go.disabled = true;
+      saveProfile(nick, color).then(function () { app.editing = false; app.acctSig = ''; renderAccount(); })
+        .catch(function () { go.disabled = false; msg.textContent = 'לא הצלחנו לשמור. בדקו שיש לכם הרשאת תורם ונסו שוב.'; });
+    });
+    var row = el('div', { class: 'admin' }, [go]);
+    if (m) {
+      var cancel = el('button', { text: 'ביטול' });
+      cancel.addEventListener('click', function () { app.editing = false; renderAccount(); });
+      row.appendChild(cancel);
+    }
+    box.appendChild(row);
+    box.appendChild(msg);
+  }
+
+  function saveProfile(nick, color) {
+    var base = app.mine || { best: 0, plays: 0, last: 0, achievedAt: Date.now() };
+    var data = Object.assign({}, base, { nick: nick, color: color, updatedAt: Date.now() });
+    app.queue = app.queue.then(function () { return playerRef().set(data); });
+    return app.queue.then(function () { app.mine = data; });
+  }
+
+  function submitScore(score) {
+    if (!canSave()) return Promise.resolve(false);
+    var m = app.mine;
+    var data = Object.assign({}, m, { plays: (m.plays || 0) + 1, last: score, updatedAt: Date.now() });
+    var isBest = score > (m.best || 0);
+    if (isBest) { data.best = score; data.achievedAt = Date.now(); }
+    app.mine = data;
+    app.queue = app.queue.then(function () { return playerRef().set(data); });
+    return app.queue.then(function () { return isBest ? 'best' : 'saved'; }).catch(function () { return false; });
+  }
+
+  /* ---------- owner controls ---------- */
+  function adminMsg(t) { $('adminMsg').textContent = t; }
+  $('btnClose').addEventListener('click', function () {
+    var top = sortedPlayers()[0];
+    if (!top || !(top.best > 0)) { adminMsg('עדיין אין ציונים, אז אין למי להכריז.'); return; }
+    contestRef().set({ closed: true, winnerId: top.id, winnerNick: top.nick || 'שחקן', winnerScore: top.best || 0, closedAt: Date.now() })
+      .then(function () { adminMsg('התחרות נסגרה. הזוכה: ' + (top.nick || 'שחקן') + '.'); })
+      .catch(function () { adminMsg('הסגירה נכשלה.'); });
+  });
+  $('btnOpen').addEventListener('click', function () {
+    contestRef().set({ closed: false, reopenedAt: Date.now() })
+      .then(function () { adminMsg('התחרות נפתחה מחדש.'); }).catch(function () { adminMsg('הפתיחה נכשלה.'); });
+  });
+  $('btnReset').addEventListener('click', function () {
+    var b = $('btnReset');
+    if (!app.resetArmed) {
+      app.resetArmed = true; b.textContent = 'לחצו שוב לאישור האיפוס';
+      setTimeout(function () { app.resetArmed = false; b.textContent = 'איפוס ציונים'; }, 5000);
+      return;
+    }
+    app.resetArmed = false; b.textContent = 'איפוס ציונים';
+    var ps = app.players.slice();
+    var chain = contestRef().set({ closed: false, resetAt: Date.now() });
+    ps.forEach(function (p) {
+      chain = chain.then(function () {
+        return app.db.doc('players/' + p.id).update({ best: 0, plays: 0, last: 0, achievedAt: Date.now() });
+      });
+    });
+    chain.then(function () { adminMsg('כל הציונים אופסו.'); }).catch(function () { adminMsg('האיפוס נכשל באמצע. נסו שוב.'); });
+  });
+
+  /* =====================================================
+     GAME
+     ===================================================== */
+  var W = 480, H = 720, TRAY_Y = 646;
+  var cv = $('cv'), ctx = cv.getContext('2d');
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cv.width = W * dpr; cv.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  try { if (document.fonts && document.fonts.load) document.fonts.load('26px "Secular One"'); } catch (e) {}
+
+  var CANDY_COLORS = ['#ff4f93', '#ffc83d', '#3ddcc2', '#7c8cff', '#ff8a3d'];
+  var TAU = Math.PI * 2;
+  var G = null;
+  var keys = { left: false, right: false };
+  var soundOn = true, actx = null;
+  var bokeh = [], sparkles = [], i0;
+  for (i0 = 0; i0 < 14; i0++) bokeh.push({ x: Math.random() * W, y: Math.random() * 560, r: 14 + Math.random() * 34, ph: Math.random() * 6, c: CANDY_COLORS[i0 % 5] });
+  for (i0 = 0; i0 < 46; i0++) sparkles.push({ x: Math.random() * W, y: Math.random() * 600, ph: Math.random() * 6, s: 1.5 + Math.random() * 2.5 });
+
+  function beep(freq, dur, type, vol) {
+    if (!soundOn) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = freq; g.gain.value = vol || 0.04;
+      o.connect(g); g.connect(actx.destination); o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + (dur || 0.08));
+      o.stop(actx.currentTime + (dur || 0.08));
+    } catch (e) {}
+  }
+
+  function newGame() {
+    return {
+      running: false, over: false, elapsed: 0, time: 60, score: 0, combo: 0, hearts: 3,
+      items: [], parts: [], pops: [], rings: [], spawn: 0.5, tray: { x: W / 2, tx: W / 2, w: 104 },
+      magnet: 0, shield: false, charge: 0, shake: 0, flash: 0, caught: 0
+    };
+  }
+  G = newGame();
+
+  var CHARGE_MAX = 14;
+  function mult() { return Math.min(5, 1 + Math.floor(G.combo / 6)); }
+
+  function spawnItem() {
+    var t = G.elapsed;
+    var bombChance = Math.min(0.32, 0.18 + t * 0.0025);
+    var type;
+    if (Math.random() < bombChance) type = 'bomb';
+    else {
+      var q = Math.random();
+      if (q < 0.04) type = 'star';
+      else if (q < 0.08) type = 'magnet';
+      else if (q < 0.12) type = 'shield';
+      else if (q < 0.30) type = 'gift';
+      else type = 'candy';
+    }
+    var speed = 150 + t * 3.2 + Math.random() * 70;
+    var it = { type: type, x: 30 + Math.random() * (W - 60), y: -30, vy: speed, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 4, r: 16, c: CANDY_COLORS[Math.floor(Math.random() * 5)], ph: Math.random() * 6 };
+    if (type === 'star') it.vy *= 1.25;
+    G.items.push(it);
+  }
+
+  function burst(x, y, color, n, spread) {
+    for (var i = 0; i < n; i++) {
+      var a = Math.random() * TAU, s = Math.random() * (spread || 160) + 30;
+      G.parts.push({ x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 70, life: 0.7 + Math.random() * 0.5, max: 1.2, c: color, size: 3 + Math.random() * 4, rot: Math.random() * 6 });
+    }
+  }
+  function pop(x, y, text, color) { G.pops.push({ x: x, y: y, text: text, c: color, life: 1 }); }
+  function ring(x, y, color) { G.rings.push({ x: x, y: y, r: 8, life: 0.45, c: color }); }
+
+  function catchItem(it) {
+    var m = mult();
+    if (it.type === 'bomb') {
+      if (G.shield) {
+        G.shield = false; burst(it.x, it.y, '#3ddcc2', 24, 230); ring(it.x, it.y, '#3ddcc2'); pop(it.x, it.y - 12, 'מגן!', '#3ddcc2'); beep(300, 0.15, 'sine', 0.05);
+      } else {
+        G.hearts--; G.combo = 0; G.shake = 0.4; G.flash = 0.28;
+        burst(it.x, it.y, '#ff6a3d', 34, 300); ring(it.x, it.y, '#ff6a3d'); pop(it.x, it.y - 12, '-♥', '#ff6a3d'); beep(110, 0.3, 'sawtooth', 0.06);
+      }
+      return;
+    }
+    if (it.type === 'magnet') { G.magnet = 8; pop(it.x, it.y - 12, 'מגנט', '#7fb0ff'); burst(it.x, it.y, '#7fb0ff', 16, 170); ring(it.x, it.y, '#7fb0ff'); beep(660, 0.12, 'triangle', 0.05); return; }
+    if (it.type === 'shield') { G.shield = true; pop(it.x, it.y - 12, 'מגן', '#3ddcc2'); burst(it.x, it.y, '#3ddcc2', 16, 170); ring(it.x, it.y, '#3ddcc2'); beep(600, 0.12, 'triangle', 0.05); return; }
+    var base = it.type === 'star' ? 60 : it.type === 'gift' ? 25 : 10;
+    var pts = base * m;
+    G.score += pts; G.combo++; G.caught++;
+    G.charge = Math.min(CHARGE_MAX, G.charge + (it.type === 'star' ? 3 : 1));
+    pop(it.x, it.y - 12, '+' + pts, it.type === 'star' ? '#ffd34d' : '#ffffff');
+    burst(it.x, it.y, it.type === 'candy' ? it.c : '#ffd34d', it.type === 'star' ? 24 : 10, 160);
+    ring(it.x, it.y, it.type === 'candy' ? it.c : '#ffd34d');
+    beep(it.type === 'star' ? 1200 : 720 + Math.min(G.combo, 20) * 22, 0.07, 'square', 0.025);
+  }
+
+  function blast() {
+    if (!G.running || G.charge < CHARGE_MAX) return;
+    G.charge = 0; G.flash = 0.4;
+    var m = mult(), gained = 0;
+    G.items = G.items.filter(function (it) {
+      if (it.type === 'bomb') { gained += 15 * m; burst(it.x, it.y, '#ffd34d', 20, 260); ring(it.x, it.y, '#ffd34d'); return false; }
+      return true;
+    });
+    G.score += gained;
+    if (gained) pop(G.tray.x, TRAY_Y - 70, '+' + gained, '#ffd34d');
+    for (var i = 0; i < 70; i++) burst(Math.random() * W, Math.random() * 320, CANDY_COLORS[i % 5], 1, 90);
+    beep(880, 0.25, 'sawtooth', 0.05);
+  }
+
+  function update(dt) {
+    if (!G.running) return;
+    G.elapsed += dt; G.time -= dt;
+    if (G.time <= 0) { G.time = 0; endGame('נגמר הזמן'); return; }
+    var dir = (keys.right ? 1 : 0) - (keys.left ? 1 : 0);
+    if (dir) G.tray.tx = Math.max(G.tray.w / 2, Math.min(W - G.tray.w / 2, G.tray.tx + dir * 560 * dt));
+    G.tray.x += (G.tray.tx - G.tray.x) * (1 - Math.exp(-dt * 20));
+    if (G.magnet > 0) G.magnet -= dt;
+    G.spawn -= dt;
+    if (G.spawn <= 0) { spawnItem(); G.spawn = Math.max(0.26, 0.74 - G.elapsed * 0.008); }
+    for (var i = G.items.length - 1; i >= 0; i--) {
+      var it = G.items[i];
+      it.y += it.vy * dt; it.rot += it.vr * dt;
+      if (it.type === 'star') it.x += Math.sin(G.elapsed * 3 + it.ph) * 40 * dt;
+      if (it.type === 'bomb' && Math.random() < dt * 18) G.parts.push({ x: it.x + 14, y: it.y - it.r - 4, vx: (Math.random() - 0.5) * 70, vy: -Math.random() * 70, life: 0.35, max: 0.35, c: '#ffb347', size: 3, rot: 0 });
+      if (G.magnet > 0 && it.type !== 'bomb') {
+        var dx = G.tray.x - it.x, dy = TRAY_Y - it.y, d = Math.hypot(dx, dy);
+        if (d < 190 && d > 1) { it.x += dx / d * 300 * dt; it.y += dy / d * 60 * dt; }
+      }
+      var hitY = it.y > TRAY_Y - 14 && it.y < TRAY_Y + 20;
+      if (hitY && Math.abs(it.x - G.tray.x) < G.tray.w / 2 + it.r * 0.5) {
+        G.items.splice(i, 1); catchItem(it);
+        if (G.hearts <= 0) { G.hearts = 0; endGame('נגמרו החיים'); return; }
+        continue;
+      }
+      if (it.y > H + 30) {
+        if (it.type === 'candy' || it.type === 'gift' || it.type === 'star') G.combo = 0;
+        G.items.splice(i, 1);
+      }
+    }
+    for (var p = G.parts.length - 1; p >= 0; p--) {
+      var q = G.parts[p]; q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 420 * dt; q.life -= dt; q.rot += dt * 8;
+      if (q.life <= 0) G.parts.splice(p, 1);
+    }
+    for (var k = G.pops.length - 1; k >= 0; k--) { G.pops[k].y -= 46 * dt; G.pops[k].life -= dt * 1.1; if (G.pops[k].life <= 0) G.pops.splice(k, 1); }
+    for (var r = G.rings.length - 1; r >= 0; r--) { G.rings[r].r += 150 * dt; G.rings[r].life -= dt; if (G.rings[r].life <= 0) G.rings.splice(r, 1); }
+    if (G.shake > 0) G.shake -= dt;
+    if (G.flash > 0) G.flash -= dt;
+  }
+
+  /* ---------- drawing ---------- */
+  function glow(x, y, r, color, a) {
+    var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, rgba(color, a)); g.addColorStop(1, rgba(color, 0));
+    ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+  }
+  function drawBackground(t) {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#1d1157'); g.addColorStop(0.55, '#140a3a'); g.addColorStop(1, '#07051c');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    glow(40, 150, 280, '#ff4f93', 0.2); glow(W - 30, 300, 280, '#3ddcc2', 0.15); glow(W / 2, H - 60, 340, '#ffc83d', 0.2);
+    var i;
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (i = 0; i < 3; i++) {
+      ctx.save(); ctx.translate(90 + i * 150, -10); ctx.rotate(Math.sin(t * 0.45 + i * 2.1) * 0.38);
+      var bg = ctx.createLinearGradient(0, 0, 0, 640);
+      bg.addColorStop(0, rgba(CANDY_COLORS[i], 0.2)); bg.addColorStop(1, rgba(CANDY_COLORS[i], 0));
+      ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(-12, 0); ctx.lineTo(12, 0); ctx.lineTo(96, 640); ctx.lineTo(-96, 640); ctx.closePath(); ctx.fill();
+      ctx.restore();
+    }
+    for (i = 0; i < bokeh.length; i++) {
+      var b = bokeh[i], a = 0.09 + 0.06 * Math.sin(t * 1.4 + b.ph);
+      glow(b.x, b.y, b.r, b.c, a * 2.2);
+    }
+    for (i = 0; i < sparkles.length; i++) {
+      var s = sparkles[i], tw = Math.max(0, Math.sin(t * 2.2 + s.ph));
+      if (tw < 0.2) continue;
+      ctx.fillStyle = 'rgba(255,255,255,' + (tw * 0.8) + ')';
+      ctx.fillRect(s.x - s.s / 2, s.y - s.s * 1.6, s.s, s.s * 3.2);
+      ctx.fillRect(s.x - s.s * 1.6, s.y - s.s / 2, s.s * 3.2, s.s);
+    }
+    ctx.restore();
+    /* dance floor */
+    var ys = [624, 646, 672, 704, 744], beat = Math.floor(t * 2), r, c;
+    for (r = 0; r < 4; r++) {
+      var y1 = ys[r], y2 = ys[r + 1], tw1 = 40 + (y1 - 624) * 0.62, tw2 = 40 + (y2 - 624) * 0.62;
+      for (c = 0; c <= 12; c++) {
+        var ci = (r * 3 + c + beat) % 5;
+        ctx.fillStyle = rgba(CANDY_COLORS[ci], 0.13 + 0.14 * Math.max(0, Math.sin(t * 5 + c * 0.8 + r)));
+        ctx.beginPath();
+        ctx.moveTo(W / 2 + (c - 6) * tw1 + 1, y1); ctx.lineTo(W / 2 + (c - 5) * tw1 - 1, y1);
+        ctx.lineTo(W / 2 + (c - 5) * tw2 - 1, y2); ctx.lineTo(W / 2 + (c - 6) * tw2 + 1, y2);
+        ctx.closePath(); ctx.fill();
+      }
+    }
+    var lg = ctx.createLinearGradient(0, 618, 0, 632);
+    lg.addColorStop(0, 'rgba(255,255,255,0)'); lg.addColorStop(1, 'rgba(255,255,255,0.22)');
+    ctx.fillStyle = lg; ctx.fillRect(0, 618, W, 14);
+  }
+  function drawCandy(it) {
+    ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(it.rot);
+    var r = it.r;
+    ctx.shadowColor = it.c; ctx.shadowBlur = 16;
+    ctx.fillStyle = it.c;
+    ctx.beginPath(); ctx.moveTo(-r * 1.35, -r * 0.62); ctx.lineTo(-r * 0.5, 0); ctx.lineTo(-r * 1.35, r * 0.62); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(r * 1.35, -r * 0.62); ctx.lineTo(r * 0.5, 0); ctx.lineTo(r * 1.35, r * 0.62); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(0, 0, r * 0.9, r * 0.66, 0, 0, TAU); ctx.fill();
+    ctx.shadowBlur = 0;
+    var hg = ctx.createRadialGradient(-r * 0.3, -r * 0.32, 1, 0, 0, r * 0.95);
+    hg.addColorStop(0, 'rgba(255,255,255,.85)'); hg.addColorStop(0.45, 'rgba(255,255,255,0)'); hg.addColorStop(1, 'rgba(0,0,0,.28)');
+    ctx.fillStyle = hg; ctx.beginPath(); ctx.ellipse(0, 0, r * 0.9, r * 0.66, 0, 0, TAU); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-r * 0.25, -r * 0.5); ctx.lineTo(r * 0.12, r * 0.5); ctx.stroke();
+    ctx.restore();
+  }
+  function drawGift(it) {
+    ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(Math.sin(it.rot) * 0.22);
+    var s = it.r;
+    ctx.shadowColor = it.c; ctx.shadowBlur = 16;
+    ctx.fillStyle = it.c; ctx.fillRect(-s, -s * 0.78, s * 2, s * 1.7);
+    ctx.shadowBlur = 0;
+    var lg = ctx.createLinearGradient(0, -s, 0, s);
+    lg.addColorStop(0, 'rgba(255,255,255,.42)'); lg.addColorStop(0.5, 'rgba(255,255,255,0)'); lg.addColorStop(1, 'rgba(0,0,0,.3)');
+    ctx.fillStyle = lg; ctx.fillRect(-s, -s * 0.78, s * 2, s * 1.7);
+    ctx.fillStyle = 'rgba(255,255,255,.92)';
+    ctx.fillRect(-s * 0.17, -s * 0.78, s * 0.34, s * 1.7);
+    ctx.fillRect(-s, -s * 0.02, s * 2, s * 0.3);
+    ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.ellipse(-s * 0.42, -s * 1.0, s * 0.42, s * 0.28, -0.5, 0, TAU); ctx.ellipse(s * 0.42, -s * 1.0, s * 0.42, s * 0.28, 0.5, 0, TAU); ctx.stroke();
+    ctx.restore();
+  }
+  function drawStar(it) {
+    ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(it.rot * 0.6);
+    ctx.shadowColor = '#ffc83d'; ctx.shadowBlur = 24;
+    var g = ctx.createRadialGradient(0, 0, 1, 0, 0, it.r * 1.2);
+    g.addColorStop(0, '#fff7c4'); g.addColorStop(0.55, '#ffd34d'); g.addColorStop(1, '#ff9f1c');
+    ctx.fillStyle = g; ctx.beginPath();
+    for (var i = 0; i < 10; i++) { var a = i * Math.PI / 5 - Math.PI / 2, rr = i % 2 ? it.r * 0.52 : it.r * 1.2; ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); }
+    ctx.closePath(); ctx.fill();
+    ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.restore();
+  }
+  function drawOrb(it, color, kind) {
+    ctx.save(); ctx.translate(it.x, it.y);
+    ctx.shadowColor = color; ctx.shadowBlur = 20;
+    var g = ctx.createRadialGradient(-5, -6, 1, 0, 0, it.r + 2);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(0.35, color); g.addColorStop(1, rgba(color, 0.65));
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, it.r + 2, 0, TAU); ctx.fill();
+    ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3.2; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (kind === 'magnet') {
+      ctx.beginPath(); ctx.arc(0, -1, 7, 0, Math.PI); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-7, -1); ctx.lineTo(-7, -8); ctx.moveTo(7, -1); ctx.lineTo(7, -8); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(0, -9); ctx.lineTo(8, -5); ctx.lineTo(7, 3); ctx.lineTo(0, 9); ctx.lineTo(-7, 3); ctx.lineTo(-8, -5); ctx.closePath(); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawBomb(it) {
+    ctx.save(); ctx.translate(it.x, it.y);
+    var g = ctx.createRadialGradient(-5, -4, 1, 0, 2, it.r + 2);
+    g.addColorStop(0, '#5b5575'); g.addColorStop(1, '#12101c');
+    ctx.shadowColor = '#ff6a3d'; ctx.shadowBlur = 14;
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 2, it.r + 1, 0, TAU); ctx.fill();
+    ctx.shadowBlur = 0; ctx.strokeStyle = 'rgba(255,106,61,.8)'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.beginPath(); ctx.ellipse(-6, -4, 4.5, 3, -0.6, 0, TAU); ctx.fill();
+    ctx.strokeStyle = '#d3be94'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(4, -it.r + 2); ctx.quadraticCurveTo(10, -it.r - 7, 14, -it.r - 4); ctx.stroke();
+    var flick = (Math.floor(G.elapsed * 14) % 2) ? '#ffd34d' : '#ff6a3d';
+    ctx.shadowColor = flick; ctx.shadowBlur = 12; ctx.fillStyle = flick;
+    ctx.beginPath(); ctx.arc(14, -it.r - 4, 4, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  function drawTray() {
+    var t = G.tray, x = t.x, y = TRAY_Y, w = t.w, m = mult();
+    glow(x, y + 26, w * 0.95, '#ffc83d', 0.34);
+    if (G.magnet > 0) {
+      ctx.strokeStyle = 'rgba(127,176,255,' + (0.28 + 0.2 * Math.sin(G.elapsed * 8)) + ')'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(x, y, 150, Math.PI, 0); ctx.stroke();
+    }
+    var g = ctx.createLinearGradient(0, y - 6, 0, y + 24);
+    g.addColorStop(0, '#fbe7a0'); g.addColorStop(0.5, '#e9a62b'); g.addColorStop(1, '#9d5f0e');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(x - w / 2, y - 4); ctx.lineTo(x + w / 2, y - 4);
+    ctx.quadraticCurveTo(x + w / 2 - 6, y + 22, x + w / 2 - 22, y + 22); ctx.lineTo(x - w / 2 + 22, y + 22);
+    ctx.quadraticCurveTo(x - w / 2 + 6, y + 22, x - w / 2, y - 4); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#fff1bd'; ctx.beginPath(); ctx.ellipse(x, y - 4, w / 2, 8, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#b87b17'; ctx.beginPath(); ctx.ellipse(x, y - 3, w / 2 - 7, 5, 0, 0, TAU); ctx.fill();
+    if (m > 1) {
+      ctx.strokeStyle = rgba(CANDY_COLORS[(m - 2) % 5], 0.5 + 0.3 * Math.sin(G.elapsed * 9)); ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.ellipse(x, y - 2, w / 2 + 8, 14, 0, 0, TAU); ctx.stroke();
+    }
+    if (G.shield) {
+      ctx.strokeStyle = 'rgba(61,220,194,.9)'; ctx.lineWidth = 4; ctx.shadowColor = '#3ddcc2'; ctx.shadowBlur = 14;
+      ctx.beginPath(); ctx.arc(x, y + 6, w / 2 + 14, Math.PI * 1.05, Math.PI * 1.95); ctx.stroke(); ctx.shadowBlur = 0;
+    }
+  }
+  function draw() {
+    var t = G.elapsed || performance.now() / 1000;
+    ctx.save();
+    if (G.shake > 0) ctx.translate((Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10);
+    drawBackground(t);
+    G.items.forEach(function (it) {
+      if (it.type === 'candy') drawCandy(it);
+      else if (it.type === 'gift') drawGift(it);
+      else if (it.type === 'star') drawStar(it);
+      else if (it.type === 'magnet') drawOrb(it, '#3d7cff', 'magnet');
+      else if (it.type === 'shield') drawOrb(it, '#16b8a6', 'shield');
+      else drawBomb(it);
+    });
+    drawTray();
+    G.rings.forEach(function (r) {
+      ctx.strokeStyle = rgba(r.c, Math.max(0, r.life / 0.45) * 0.8); ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, TAU); ctx.stroke();
+    });
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    G.parts.forEach(function (q) {
+      ctx.globalAlpha = Math.max(0, q.life / q.max); ctx.fillStyle = q.c;
+      ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(q.rot); ctx.fillRect(-q.size / 2, -q.size / 4, q.size, q.size / 2); ctx.restore();
+    });
+    ctx.restore();
+    ctx.globalAlpha = 1;
+    ctx.textAlign = 'center'; ctx.lineJoin = 'round';
+    G.pops.forEach(function (p) {
+      var sc = 1 + Math.max(0, p.life - 0.75) * 2.4;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.scale(sc, sc);
+      ctx.globalAlpha = Math.max(0, Math.min(1, p.life * 1.8));
+      ctx.font = '400 26px "Secular One", Heebo, Arial, sans-serif';
+      ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(12,6,44,.85)'; ctx.strokeText(p.text, 0, 0);
+      ctx.fillStyle = p.c; ctx.fillText(p.text, 0, 0);
+      ctx.restore();
+    });
+    ctx.globalAlpha = 1;
+    var vg = ctx.createRadialGradient(W / 2, H / 2, 260, W / 2, H / 2, 520);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.42)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+    if (G.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + Math.min(0.5, G.flash * 1.5) + ')'; ctx.fillRect(0, 0, W, H); }
+    ctx.restore();
+  }
+
+  /* ---------- HUD / flow ---------- */
+  var lastHud = '';
+  function hud() {
+    var m = mult();
+    var sig = [G.score, Math.ceil(G.time), G.hearts, m, G.combo % 6, G.charge, G.running].join('|');
+    if (sig === lastHud) return;
+    lastHud = sig;
+    $('hScore').textContent = G.score;
+    $('hTime').textContent = Math.ceil(G.time);
+    $('hTimeBox').className = 'ht' + (G.running && G.time <= 10 ? ' warn' : '');
+    var hh = $('hHearts'); hh.textContent = '';
+    for (var i = 0; i < 3; i++) hh.appendChild(el('span', { class: i < G.hearts ? '' : 'off', text: '♥' }));
+    $('hCombo').textContent = 'x' + m;
+    $('cFill').parentNode.style.setProperty('--cp', m >= 5 ? 1 : (G.combo % 6) / 6);
+    var ready = G.running && G.charge >= CHARGE_MAX;
+    var b = $('blast');
+    b.disabled = !ready;
+    b.className = 'blast' + (ready ? ' ready' : '');
+    b.style.setProperty('--p', G.charge / CHARGE_MAX);
+  }
+
+  function showOverlay(title, bodyNode, btnText) {
+    $('ovTitle').textContent = title;
+    var b = $('ovBody'); b.textContent = '';
+    if (bodyNode) b.appendChild(bodyNode);
+    $('ovBtn').textContent = btnText;
+    $('ov').hidden = false;
+  }
+
+  function introBody() {
+    function row(color, text) { return el('div', {}, [el('i', { style: 'background:' + color }), el('span', { text: text })]); }
+    return el('div', {}, [
+      el('p', { text: 'המגש שלכם תופס מה שנופל. 60 שניות ושלושה לבבות.' }),
+      el('div', { class: 'legend' }, [
+        row('#ff4f93', 'ממתק 10 נקודות, מתנה 25, כוכב 60'),
+        row('#ff6a3d', 'פצצה מורידה לב ומאפסת את הרצף'),
+        row('#ffd34d', 'כל 6 תפיסות ברצף מעלות את המכפיל, עד x5'),
+        row('#3d7cff', 'כדור כחול הוא מגנט, כדור ירוק הוא מגן'),
+        row('#3ddcc2', 'ממלאים את הפס ומפוצצים את כל הפצצות בלחיצה')
+      ])
+    ]);
+  }
+
+  function startGame() {
+    G = newGame(); G.running = true; lastHud = '';
+    $('ov').hidden = true;
+    beep(440, 0.1, 'triangle', 0.05);
+  }
+
+  function endGame(reason) {
+    if (!G.running) return;
+    G.running = false; G.over = true; hud();
+    var score = G.score;
+    var status = el('p', { text: '' });
+    var body = el('div', {}, [
+      el('p', { text: reason }),
+      el('div', { class: 'big', text: String(score) }),
+      el('p', { text: 'נקודות · נתפסו ' + G.caught + ' פריטים' }),
+      status
+    ]);
+    showOverlay('סיום משחק', body, 'שחקו שוב');
+    beep(220, 0.4, 'sine', 0.05);
+    if (!app.db || !app.uid) status.textContent = 'הציון לא נשמר: פתחו את הדף מתוך Claude כדי להתחרות.';
+    else if (app.contest.closed) status.textContent = 'התחרות נסגרה, לכן הציון לא נשמר.';
+    else if (app.canWrite === false) status.textContent = 'ההרשאה שלכם היא צפייה בלבד, לכן הציון לא נשמר.';
+    else if (!app.mine) status.textContent = 'פתחו חשבון בצד כדי שהציונים הבאים יירשמו בטבלה.';
+    else {
+      status.textContent = 'שומר…';
+      submitScore(score).then(function (r) {
+        status.textContent = r === 'best' ? 'שיא אישי חדש! נרשם בטבלה.' : r === 'saved' ? 'נרשם בטבלה. השיא האישי שלכם נשאר ' + (app.mine.best || 0) + '.' : 'השמירה נכשלה. נסו שוב במשחק הבא.';
+      });
+    }
+  }
+
+  $('ovBtn').addEventListener('click', startGame);
+  $('blast').addEventListener('click', blast);
+  $('muteBtn').addEventListener('click', function () {
+    soundOn = !soundOn; this.textContent = 'צליל: ' + (soundOn ? 'פעיל' : 'כבוי'); this.setAttribute('aria-pressed', String(!soundOn));
+  });
+
+  /* ---------- input ---------- */
+  function pointerX(ev) {
+    var r = cv.getBoundingClientRect();
+    return (ev.clientX - r.left) / r.width * W;
+  }
+  function setTarget(ev) {
+    G.tray.tx = Math.max(G.tray.w / 2, Math.min(W - G.tray.w / 2, pointerX(ev)));
+  }
+  cv.addEventListener('pointermove', function (ev) { if (G.running) setTarget(ev); });
+  cv.addEventListener('pointerdown', function (ev) { if (G.running) setTarget(ev); });
+  document.addEventListener('keydown', function (ev) {
+    var t = ev.target && ev.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (ev.code === 'ArrowLeft' || ev.code === 'KeyA') { keys.left = true; if (G.running) ev.preventDefault(); }
+    else if (ev.code === 'ArrowRight' || ev.code === 'KeyD') { keys.right = true; if (G.running) ev.preventDefault(); }
+    else if (ev.code === 'Space') { if (G.running) { ev.preventDefault(); blast(); } }
+  });
+  document.addEventListener('keyup', function (ev) {
+    if (ev.code === 'ArrowLeft' || ev.code === 'KeyA') keys.left = false;
+    else if (ev.code === 'ArrowRight' || ev.code === 'KeyD') keys.right = false;
+  });
+
+  var lastT = performance.now();
+  function loop(now) {
+    var dt = Math.min(0.05, (now - lastT) / 1000); lastT = now;
+    update(dt); draw(); hud();
+    requestAnimationFrame(loop);
+  }
+
+  showOverlay('מרוץ המסיבה', introBody(), 'התחל');
+  requestAnimationFrame(loop);
+  renderAll();
+  initBackend();
+})();
+</script>
+
+</body></html>
+<!-- Injection By NetFree -->
+<script src="//netfree.link/injection-script/go-payment.js" type="text/javascript" async ></script>
+<script src="//netfree.link/injection-script/popup-card-init.js" type="text/javascript" async ></script>
