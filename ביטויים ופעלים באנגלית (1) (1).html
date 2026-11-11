@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ביטויים ופעלים באנגלית</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fffaf3;--card:#fff;--tx:#2b2540;--sub:#5b5670;--l:93%;--bl:52%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17141f;--card:#232030;--tx:#f1eefb;--sub:#b9b3cf;--l:21%;--bl:68%}}
+:root[data-theme="dark"]{--bg:#17141f;--card:#232030;--tx:#f1eefb;--sub:#b9b3cf;--l:21%;--bl:68%}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Segoe UI",Arial,sans-serif;line-height:1.4}
+header{text-align:center;padding:32px 16px 8px}
+h1{margin:0;font-size:2rem}
+header p{color:var(--sub);margin:6px 0 0}
+main{max-width:980px;margin:auto;padding:12px 16px 40px}
+section{margin:28px 0}
+h2{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 16px;border-radius:14px;font-size:1.25rem;background:hsl(var(--h) 75% var(--bl));color:#fff}
+h2 small{margin-inline-start:auto;font-weight:400;opacity:.9;font-size:.85rem}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.c{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:hsl(var(--h) 80% var(--l));border-right:5px solid hsl(var(--h) 70% var(--bl))}
+.e{font-size:1.6rem;flex:none}
+.en{display:block;font-weight:700;direction:ltr;text-align:left;color:hsl(var(--h) 65% var(--t))}
+.he{display:block;color:var(--tx);font-size:.95rem}
+:root{--t:35%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--t:78%}}
+:root[data-theme="dark"]{--t:78%}
+.c{cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;animation:rise .6s cubic-bezier(.2,.9,.3,1.2) both,bob var(--bt,4s) ease-in-out var(--d,0s) infinite;animation-delay:calc(var(--i,0)*45ms),var(--d,0s);transition:transform .2s,box-shadow .2s}
+.c:hover{transform:scale(1.04);box-shadow:0 6px 18px hsl(var(--h) 60% 40%/.3)}
+.c:active{transform:scale(.97)}
+.c:focus-visible{outline:3px solid hsl(var(--h) 70% var(--bl));outline-offset:2px}
+.c.say{animation:rise .1s both,wig .6s ease-in-out;box-shadow:0 0 0 4px hsl(var(--h) 80% var(--bl)/.55)}
+.c:hover .e,.c.say .e{animation:jump .6s ease}
+@keyframes rise{from{opacity:0;transform:translateY(24px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -5px}}
+@keyframes wig{0%,100%{rotate:0deg}25%{rotate:-2deg}75%{rotate:2deg}}
+@keyframes jump{0%,100%{transform:translateY(0)}40%{transform:translateY(-8px) scale(1.25)}}
+h2{animation:rise .7s both}
+#mu{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:10px;z-index:5;border:0;border-radius:99px;padding:9px 15px;font:inherit;font-weight:700;cursor:pointer;background:hsl(280 70% 58%);color:#fff;box-shadow:0 3px 10px #0004}
+#mu.on{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.hint{text-align:center;color:var(--sub);margin:4px 16px}
+@media (prefers-reduced-motion:reduce){.c,h2,#mu.on{animation:none}}
+</style></head><body>
+<header><h1>📚 ביטויים ופעלים באנגלית</h1><p>עם תרגום לעברית</p></header>
+<button id="mu" aria-label="מוזיקת רקע">🎵 מוזיקה</button>
+<p class="hint">👆 לחצו על כרטיסייה כדי לשמוע את המשפט באנגלית 🔊</p>
+<main id="m"></main>
+<script>
+const S=[
+["ביטויים בסיסיים ו-Used to","🌟",280,`It’s up to you|הבחירה בידיך / זה תלוי בך
+I feel up to ...|אני מרגיש מסוגל ל... / יש בי כוח ל...
+I feel like eating now|בא לי לאכול עכשיו
+I don’t like going|אני לא אוהב ללכת
+I can’t stand listening to incorrect English|אני לא יכול לסבול להאזין לאנגלית שגויה
+I can’t help talking in class|אני לא יכול להימנע מלדבר בכיתה
+I look forward to meeting you|אני מצפה לפגוש אותך
+I am looking forward to seeing you again|אני מצפה לראות אותך שוב
+Get used to|להתרגל ל...
+It’s no use|אין טעם בזה
+She used up all the ink|היא השתמשה בכל הדיו / גמרה את כל הדיו
+I use the air conditioner every day|אני משתמש במזגן בכל יום
+It’s no use crying over spilled milk|אין טעם לבכות על חלב שנשפך
+It has no use|אין לזה שימוש
+He isn’t used to driving|הוא אינו רגיל לנהוג
+He couldn’t get used to living abroad|הוא לא הצליח להתרגל לחיות בחוץ לארץ
+When we were kids we used to go to bed early|כשהיינו ילדים נהגנו ללכת לישון מוקדם`],
+["Put · Give · Turn","🧩",340,`put on|ללבוש / לשים (על הגוף)
+put off|לדחות
+push off|להתרחק / לצאת לדרך
+put away|לשים בצד / לסדר
+put up|להרים / לסבול / להקים
+put up with|לסבול / לשאת (מצב או אדם)
+lift up|להרים למעלה
+put down|להניח / לרשום
+give in|להיכנע / לוותר
+give up|לוותר / להרים ידיים
+Give up smoking|להפסיק לעשן
+give out|לחלק / להיגמר
+Give over|להפסיק (התנהגות) / להעביר
+turn back|לחזור אחורה
+turn off|לכבות
+turn on|להדליק
+turn around|להסתובב / לעשות פרסה
+turn over|להפוך (דף, רכב וכו')
+turn over a new leaf|לפתוח דף חדש
+turn up|להופיע / להגביר (ווליום)`],
+["Move · Keep · Run · Get · Break","🏃",150,`move in|להיכנס לדירה / לעבור לגור ב...
+move out|לצאת מדירה / לעבור דירה החוצה
+move away|להתרחק / לעבור מקום מגורים
+move over|להזוז הלאה / לפנות מקום
+move on|להמשיך הלאה
+keep away|להתרחק
+keep on|להמשיך
+keep off|להתרחק מ... / להימנע מ...
+run out of|אזל לו / נגמר לו
+run away|לברוח
+run over|לדרוס / לעבור על משהו במהירות
+run after|לרוץ אחרי
+I’m in favor of trying it|אני בעד לנסות את זה
+What’s the point of trying if I won’t succeed|מה הטעם לנסות אם לא אצליח
+get away|לברוח / להתרחק / לחופשה
+get away with|לצאת מזה בשלום (בלי עונש)
+get along|להסתדר (עם מישהו)
+break into|לפרוץ לתוך
+break out|פרץ (מלחמה, שריפה)
+break up|להיפרד (בזוגיות)
+snap out of it|לצאת מזה (להתעשת)
+believe in|להאמין ב...
+insist on|להתעקש על...
+smile at|לחייך אל...
+suffer from|לסבול מ...`],
+["Look · Let · Take","👀",200,`let up|להירגע (מזג אוויר, כאב) / להפסיק
+let on|לגלות סוד / לרמוז
+let down|לאכזב
+look|להסתכל / מראה
+look at|להסתכל על...
+look for|לחפש
+look out|להיזהר! / להסתכל החוצה
+look up|לחפש מידע (במילון/רשת) / להרים עיניים
+look into|לבדוק לעומק / לחקור
+look forward to|מצפה ל...
+look after|לטפל ב... / לשמור על...
+look like|להיראות כמו...
+look away|להסב את המבט
+take|לקחת
+take in|לקלוט / להכניס פנימה
+take care of|לדאוג ל... / לטפל ב...
+take off|להסיר (בגדים) / להמריא (מטוס)
+take on|לקחת על עצמו (משימה/אחריות)
+take over|להשתלט / לקבל לידיים (ניהול)
+take it easy|לקחת בקלות / להירגע
+take your time|קח את הזמן שלך
+take advantage of|לנצל הזדמנות / לנצל משהו לטובה
+take part|לקחת חלק / להשתתף
+It takes time|זה לוקח זמן`],
+["Make & Do","🛠️",25,`Make|לעשות / ליצור
+Make a bed|לסדר מיטה
+Make a living|להתפרנס / להרוויח למחיה
+Make a mistake|לעשות טעות
+Make a speech|לשאת נאום
+Make sure|לוודא
+Make fun of|ללעוג ל... / לצחוק על...
+Make it|להצליח להגיע / לעשות זאת
+Make money|להרוויח כסף
+Make sense|להיות הגיוני
+Make trouble|לעורר בעיות
+Make use of|להשתמש ב...
+Make someone|לגרום למישהו...
+Make an effort|להתאמץ
+Makes me hungry|עושה אותי רעב
+Makes me crazy|משגע אותי
+Make up your mind|להחליט
+She can’t make up her mind|היא לא מצליחה להחליט
+Do|לעשות / לבצע
+Do a job|לעשות עבודה
+Do an exercise|לעשות תרגיל
+Do a project|לעשות פרויקט
+Do badly|לעשות בצורה גרועה
+Do well|לעשות טוב / להצליח
+Do better|לעשות טוב יותר
+Do your best|לעשות את המיטב שלך
+Do homework|לעשות שיעורי בית
+Do housework|לעשות עבודות בית
+Do something/everything|לעשות משהו / הכל
+Do a favor|לעשות טובה
+Do without?|להסתדר בלי?`],
+["On · Off · About · For","🔀",190,`Put (something on)|לשים (משהו על...)
+Switch on|להדליק (מתג)
+Carry on|להמשיך
+Dragged on|נמשך יותר מדי זמן
+Hold on|להחזיק מעמד / רגע אחד (בטלפון)
+Fall off|ליפול מ...
+Switch off|לכבות (מתג)
+Sparked off|עורר / הצית (מצב או אירוע)
+Wear off|לפוג / להיחלש (השפעה, כמו תרופה)
+Spark off|להצית / לגרום להתפרצות
+Ask about|לשאול על...
+Forget about|לשכוח מ...
+Speak about|לדבר על...
+Tell (someone)|לספר ל...
+Write about|לכתוב על...
+Ask for|לבקש מ...
+Learn for|ללמוד עבור...
+Pay for|לשלם בעבור...
+Study for|ללמוד לקראת...
+Thank someone for|להודות למישהו על...
+Wait for|לחכות ל...
+Work out|להתאמן / להסתדר על הצד הטוב ביותר
+It won’t work out|זה לא יסתדר`],
+["Up · Down · About & With","⬆️",320,`Keep up with the latest developments|להתעדכן בהתפתחויות האחרונות
+The economy is beginning to pick up again|הכלכלה מתחילה להתאושש שוב
+Save up|לחסוך כסף
+Think up|להמציא / להגות רעיון
+Close down|לסגור לצמיתות (עסק, חנות)
+Step down|להתפטר / לרדת דרגה
+Write down|לרשום / לכתוב
+Please note down everything he says|אנא רשום כל מה שהוא אומר
+Angry about|כועס על (מצב/דבר)
+Angry with|כועס על (מישהו)
+Annoyed about|מטרד / טרחה לגבי...
+Annoyed with|מרוגז על מישהו
+I’m really happy with my new cleaner|אני ממש מרוצה מהמנקה החדש שלי
+Dan is so happy about our engagement|דן כל כך שמח על האירוסין שלנו
+Instead of|במקום...
+In charge of|אחראי על...`]];
+const E=[[/turn on|switch on|spark|use the air/i,"💡"],[/turn off|switch off/i,"🔌"],[/put on/i,"🧥"],[/take off/i,"✈️"],[/give up smoking/i,"🚭"],[/give in|give up/i,"🏳️"],[/give out/i,"🎁"],[/turn over a new|new leaf/i,"🍃"],[/turn (back|around)/i,"↩️"],[/turn up|turn over/i,"🔊"],[/push|move on/i,"➡️"],[/put away|bed/i,"🧺"],[/put up|lift/i,"🏗️"],[/put down|write|note/i,"✍️"],[/move (in|out)|cleaner|housework/i,"🏠"],[/move/i,"📦"],[/keep (away|off)/i,"🚧"],[/keep|carry|drag/i,"🔁"],[/run out/i,"🪫"],[/run over/i,"🚗"],[/run/i,"🏃"],[/favor|favour|gift/i,"🤝"],[/point|think|mind|idea/i,"💭"],[/get away/i,"🏖️"],[/get along|happy|smile/i,"😊"],[/break into/i,"🔓"],[/break up|angry|crazy|annoyed|crying/i,"💔"],[/break out/i,"🔥"],[/snap/i,"🫰"],[/believe|favor/i,"🙏"],[/insist/i,"☝️"],[/suffer|hungry/i,"🤒"],[/let down/i,"😞"],[/let/i,"🤫"],[/look (out|up|into|away|at|for)|^look$/i,"🔍"],[/look after|take care/i,"🧸"],[/look forward|looking forward/i,"🤩"],[/take (in|part)/i,"🙋"],[/take (over|on)/i,"👔"],[/easy|time|your time/i,"⏳"],[/advantage/i,"🎯"],[/money|living|economy|pay|save/i,"💰"],[/speech|speak|tell|ask|forget/i,"💬"],[/mistake/i,"❌"],[/sure|sense/i,"✅"],[/fun/i,"😄"],[/effort|best|better|well|exercise|work out|job|project/i,"💪"],[/homework|study|learn|English|class/i,"📖"],[/wait|hold on/i,"⏱️"],[/thank/i,"💐"],[/engagement/i,"💍"],[/ink/i,"🖋️"],[/milk/i,"🥛"],[/kids|used to/i,"🧒"],[/driving|abroad/i,"🌍"],[/eat/i,"🍽️"],[/close down|step down/i,"🔻"],[/charge|instead/i,"🔄"],[/wear off/i,"💊"],[/fall/i,"🍂"],[/pick up|begin/i,"📈"]];
+const m=document.getElementById("m");let n=0;
+for(const[t,ic,h,d]of S){const rows=d.split("\n");
+let x=`<section style="--h:${h}"><h2><span>${ic}</span>${t}<small>${rows.length}</small></h2><div class="g">`;
+for(const r of rows){const[a,b]=r.split("|");const e=(E.find(k=>k[0].test(a))||[0,ic])[1];
+x+=`<div class="c" role="button" tabindex="0" data-s="${a}" style="--i:${(n++)%24};--d:${(Math.random()*3).toFixed(2)}s;--bt:${(3.5+Math.random()*2).toFixed(1)}s"><span class="e">${e}</span><div><span class="en">${a}</span><span class="he">${b}</span></div></div>`}
+m.insertAdjacentHTML("beforeend",x+"</div></section>")}
+let V=null;const ss=window.speechSynthesis;
+function pv(){if(!ss)return;const l=ss.getVoices();V=l.find(v=>/en[-_]US/i.test(v.lang))||l.find(v=>/^en/i.test(v.lang))||null}
+pv();if(ss)ss.onvoiceschanged=pv;
+function say(el){const t=el.dataset.s.replace(/\.{2,}/g,"").replace(/\//g," or ").replace(/[()?]/g,"").trim();
+el.classList.remove("say");void el.offsetWidth;el.classList.add("say");setTimeout(()=>el.classList.remove("say"),650);
+if(!ss)return;try{ss.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="en-US";u.rate=.85;if(V)u.voice=V;ss.speak(u)}catch(e){}}
+m.addEventListener("click",e=>{const c=e.target.closest(".c");if(c)say(c)});
+m.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.classList.contains("c")){e.preventDefault();say(e.target)}});
+const AC=window.AudioContext||window.webkitAudioContext;let ac,mg,tm,st=0,on=false;
+const ML=[523,659,784,659,880,784,659,587,523,659,784,1047,880,784,659,0],BS=[131,175,196,131];
+function pl(f,t,d,ty,v){if(!f)return;const o=ac.createOscillator(),g=ac.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(mg);o.start(t);o.stop(t+d+.05)}
+function tick(){const t=ac.currentTime+.05;pl(ML[st%16],t,.5,"triangle",.5);if(st%4==0)pl(BS[(st/4|0)%4],t,1.8,"sine",.7);st++}
+const b=document.getElementById("mu");
+b.onclick=()=>{try{if(!ac){ac=new AC();mg=ac.createGain();mg.gain.value=.06;mg.connect(ac.destination)}
+if(!on){ac.resume();tm=setInterval(tick,430);on=true;b.textContent="🔇 השתק";b.classList.add("on")}
+else{clearInterval(tm);on=false;b.textContent="🎵 מוזיקה";b.classList.remove("on")}}catch(e){}};
+</script></body></html>
+
+<!-- Injection By NetFree -->
+<script src="//netfree.link/injection-script/go-payment.js" type="text/javascript" async ></script>
+<script src="//netfree.link/injection-script/popup-card-init.js" type="text/javascript" async ></script>
