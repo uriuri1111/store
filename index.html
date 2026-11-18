@@ -5,235 +5,316 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>ניהול אישורי הגעה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Frank+Ruhl+Libre:wght@500;700&display=swap" rel="stylesheet">
 <style>
+  /* ---- מערכת עיצוב: לוח כיתה ירוק, נייר קריר, גיר צהוב לסימון "היום" ---- */
   :root{
-    --bg:#f4f6fa; --card:#fff; --ink:#1c2533; --muted:#6b7686; --line:#e3e7ee;
-    --pri:#1f4e79; --pri2:#2d6aa3; --ok:#1f8a5b; --warn:#c77c02; --bad:#c0392b; --soft:#eef3f9;
+    --ink:#1f2a37; --muted:#66707a; --faint:#98a1a8;
+    --paper:#f5f7f4; --card:#ffffff; --line:#dce3dc; --line2:#eaefea;
+    --board:#2e5e4e; --board-d:#234a3d; --board-l:#e6efea;
+    --chalk:#f2c14e; --chalk-l:#fdf3d8;
+    --bad:#a8463a; --bad-l:#f8e8e5; --warn:#a46a0a;
+    --serif:"Frank Ruhl Libre","David Libre",Georgia,serif;
+    --sans:"Assistant","Segoe UI",Arial,sans-serif;
+    --r:10px;
   }
   *{box-sizing:border-box}
   [hidden]{display:none!important}
-  body{margin:0;font-family:"Segoe UI",Arial,"Heebo",sans-serif;background:var(--bg);color:var(--ink);font-size:15px}
-  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;padding:6px 12px}
-  button:hover{background:var(--soft)}
-  button.pri{background:var(--pri);border-color:var(--pri);color:#fff}
-  button.pri:hover{background:var(--pri2)}
-  button.danger{color:var(--bad)}
-  button.sm{padding:3px 9px;font-size:13px}
-  input,select,textarea{font:inherit;border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:#fff;color:var(--ink)}
-  input:focus,select:focus,textarea:focus{outline:2px solid #b9d0ea;border-color:var(--pri2)}
+  html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+  button,input,select,textarea{font:inherit;color:inherit}
+  :focus-visible{outline:3px solid var(--chalk);outline-offset:2px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 
-  /* כניסה */
-  .login{min-height:100vh;display:flex;align-items:center;justify-content:center}
-  .login-box{background:#fff;padding:32px 36px;border-radius:16px;box-shadow:0 8px 30px rgba(20,40,80,.08);width:min(360px,92vw);text-align:center}
-  .login-box h2{margin:0 0 6px;color:var(--pri)}
-  .login-box p{margin:0 0 18px;color:var(--muted)}
-  .login-box input{width:100%;text-align:center;font-size:20px;letter-spacing:4px;margin-bottom:12px}
-  .login-box button{width:100%;padding:10px}
-  .err{color:var(--bad);min-height:20px;margin-top:10px;font-size:14px}
+  .btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 14px;cursor:pointer;font-weight:600;font-size:15px;white-space:nowrap}
+  .btn:hover{border-color:var(--board);color:var(--board)}
+  .btn.pri{background:var(--board);border-color:var(--board);color:#fff}
+  .btn.pri:hover{background:var(--board-d);color:#fff}
+  .btn.ghost{border-color:transparent;background:none}
+  .btn.ghost:hover{background:var(--board-l)}
+  .btn.sm{padding:4px 10px;font-size:14px}
+  .btn.danger{color:var(--bad)}
+  .btn.danger:hover{border-color:var(--bad);background:var(--bad-l)}
+  .btn:disabled{opacity:.5;cursor:default}
+  input,select,textarea{border:1px solid var(--line);border-radius:8px;padding:8px 11px;background:#fff;min-width:0}
+  input:focus,select:focus,textarea:focus{border-color:var(--board);outline:none;box-shadow:0 0 0 3px var(--board-l)}
 
-  /* מבנה */
-  header{background:var(--pri);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  header h1{font-size:20px;margin:0;flex:1}
-  header .upd{font-size:13px;opacity:.8}
-  header button{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
-  header button:hover{background:rgba(255,255,255,.12)}
-  main{max-width:1200px;margin:0 auto;padding:20px}
+  /* ---- כניסה ---- */
+  .login{min-height:100vh;display:grid;place-items:center;padding:20px;background:var(--board)}
+  .login-box{background:var(--card);border-radius:14px;padding:36px 34px 28px;width:min(380px,100%)}
+  .login-box h1{font:700 30px/1.2 var(--serif);margin:0 0 6px;color:var(--board-d)}
+  .login-box p{margin:0 0 22px;color:var(--muted)}
+  .login-box input{width:100%;font-size:22px;text-align:center;letter-spacing:6px;padding:10px;margin-bottom:12px}
+  .login-box .btn{width:100%;padding:11px;font-size:16px}
+  .err{color:var(--bad);min-height:22px;margin-top:10px;font-size:14px}
 
-  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
-  .stat{background:var(--card);border-radius:12px;padding:14px 18px;border:1px solid var(--line)}
-  .stat .v{font-size:28px;font-weight:700;color:var(--pri)}
-  .stat .l{color:var(--muted);font-size:13px}
+  /* ---- כותרת ---- */
+  header{background:var(--board);color:#fff}
+  .head-in{max-width:1100px;margin:0 auto;padding:18px 24px 0;display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap}
+  .head-in h1{font:700 26px/1.2 var(--serif);margin:0 0 14px;flex:1;min-width:200px}
+  .head-tools{display:flex;gap:6px;align-items:center;margin-bottom:12px;font-size:14px}
+  .head-tools .upd{opacity:.7;margin-left:6px}
+  .head-tools .btn{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+  .head-tools .btn:hover{background:rgba(255,255,255,.12);color:#fff}
+  .sys-tag{background:rgba(255,255,255,.14);border-radius:6px;padding:2px 9px;font-size:13px;margin-bottom:16px}
+  nav.tabs{max-width:1100px;margin:0 auto;padding:0 18px;display:flex;gap:2px;overflow-x:auto}
+  nav.tabs button{background:none;border:none;color:rgba(255,255,255,.75);padding:10px 14px 12px;cursor:pointer;font-weight:600;border-radius:8px 8px 0 0;white-space:nowrap}
+  nav.tabs button:hover{color:#fff}
+  nav.tabs button.active{background:var(--paper);color:var(--board-d)}
 
-  .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:16px}
-  .tabs button{border:none;border-bottom:3px solid transparent;border-radius:0;background:none;padding:10px 16px;color:var(--muted)}
-  .tabs button.active{color:var(--pri);border-bottom-color:var(--pri);font-weight:600}
+  main{max-width:1100px;margin:0 auto;padding:22px 24px 60px}
 
-  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-  .toolbar .grow{flex:1;min-width:180px}
+  /* ---- שורת סיכום ---- */
+  .summary{font-size:18px;margin:0 0 20px;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:baseline}
+  .summary b{font:700 24px/1 var(--serif);color:var(--board-d);margin-left:4px}
+  .summary .alert{color:var(--bad);font-size:15px}
 
-  .day-head{margin:22px 0 10px;font-weight:700;color:var(--pri);display:flex;align-items:center;gap:8px}
-  .day-head .tag{background:var(--pri);color:#fff;border-radius:20px;padding:1px 10px;font-size:12px;font-weight:500}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+  .seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:9px;padding:3px}
+  .seg button{border:none;background:none;padding:5px 13px;border-radius:7px;cursor:pointer;font-weight:600;color:var(--muted)}
+  .seg button.on{background:var(--board-l);color:var(--board-d)}
+  .toolbar .search{flex:1;min-width:200px}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
-  .card.off{opacity:.6}
-  .card.open{grid-column:1/-1}
-  .top{display:flex;gap:12px;align-items:flex-start}
-  .time{background:var(--soft);color:var(--pri);font-weight:700;border-radius:10px;padding:8px 10px;font-size:18px;min-width:70px;text-align:center}
-  .info{flex:1}
-  .subj{font-weight:700;font-size:16px}
-  .meta{color:var(--muted);font-size:13px;margin-top:3px}
-  .chips{display:flex;gap:5px;flex-wrap:wrap}
-  .chip{font-size:12px;border-radius:20px;padding:2px 9px;background:var(--soft);color:var(--pri)}
-  .chip.full{background:#fdecea;color:var(--bad)}
-  .chip.off{background:#eee;color:#666}
-  .chip.past{background:#f1f1f1;color:#777}
-  .chip.closed{background:#fff4e0;color:var(--warn)}
-  .bar{height:8px;background:#edf0f4;border-radius:6px;overflow:hidden}
-  .bar>div{height:100%;background:var(--ok);border-radius:6px;transition:width .3s}
-  .bar.hi>div{background:var(--warn)}
-  .bar.max>div{background:var(--bad)}
-  .count{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
-  .count b{color:var(--ink)}
-  .actions{display:flex;gap:6px;flex-wrap:wrap}
-  .notes{font-size:13px;color:var(--muted);background:#fafbfc;border-radius:8px;padding:6px 10px}
+  /* ---- יום ---- */
+  .day{margin-top:26px}
+  .day-h{display:flex;align-items:baseline;gap:10px;padding:0 4px 8px;border-bottom:2px solid var(--ink)}
+  .day-h h2{font:700 21px/1.3 var(--serif);margin:0}
+  .day-h .rel{font-weight:700;font-size:14px;padding:1px 10px;border-radius:6px;background:var(--line2);color:var(--muted)}
+  .day.today .day-h .rel{background:var(--chalk);color:var(--ink)}
+  .day-h .sum{margin-right:auto;color:var(--muted);font-size:14px}
 
-  .regs{border-top:1px dashed var(--line);padding-top:10px}
-  table{width:100%;border-collapse:collapse;font-size:14px}
-  th,td{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line)}
-  th{color:var(--muted);font-weight:600;font-size:13px;background:#fafbfc}
-  tr.cx td{color:#999;text-decoration:line-through}
-  tr.cx td:last-child{text-decoration:none}
-  .addreg{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .addreg input{flex:1;min-width:140px}
-  .empty{color:var(--muted);text-align:center;padding:30px}
+  /* ---- שורת שיעור ---- */
+  .lesson{background:var(--card);border-bottom:1px solid var(--line)}
+  .lesson.off{background:#f9faf9}
+  .lesson.off .l-main,.lesson.off .l-time{opacity:.55}
+  .l-row{display:grid;grid-template-columns:86px 1fr minmax(170px,240px) auto;gap:16px;align-items:center;padding:14px 12px}
+  .l-time{font:700 26px/1 var(--serif);color:var(--board-d);font-variant-numeric:tabular-nums}
+  .l-subj{font-weight:700;font-size:17px}
+  .l-meta{color:var(--muted);font-size:14px;display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:2px}
+  .flags{display:inline-flex;gap:6px;margin-right:8px;vertical-align:2px}
+  .flag{font-size:12px;font-weight:700;padding:1px 8px;border-radius:5px;background:var(--line2);color:var(--muted)}
+  .flag.full{background:var(--bad-l);color:var(--bad)}
+  .flag.closed{background:var(--chalk-l);color:var(--warn)}
 
-  .users-form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
-  .users-form input[type=text],.users-form input[type=tel]{flex:1;min-width:150px}
-  .tablebox{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:auto}
+  /* מושבים – הסימן המזהה של הלוח: כל עיגול הוא מקום צפייה */
+  .seats{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px;max-width:240px}
+  .seat{width:11px;height:11px;border-radius:50%;border:1.5px solid var(--board);background:transparent}
+  .seat.on{background:var(--board)}
+  .lesson.isfull .seat.on{background:var(--bad);border-color:var(--bad)}
+  .seatbar{height:8px;border-radius:4px;background:var(--line2);overflow:hidden;margin-bottom:6px}
+  .seatbar>i{display:block;height:100%;background:var(--board)}
+  .seat-txt{font-size:14px;color:var(--muted)}
+  .seat-txt b{color:var(--ink);font-size:16px}
 
-  dialog{border:none;border-radius:16px;padding:0;width:min(520px,94vw);box-shadow:0 20px 60px rgba(0,0,0,.25)}
-  dialog::backdrop{background:rgba(20,30,50,.45)}
-  .dlg-h{background:var(--pri);color:#fff;padding:14px 20px;font-weight:700}
-  .dlg-b{padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .dlg-b label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-  .dlg-b .full{grid-column:1/-1}
-  .dlg-f{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-start}
+  .l-act{display:flex;gap:6px;align-items:center}
+  .menu{position:relative}
+  .menu-list{position:absolute;left:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px;min-width:190px;z-index:20;box-shadow:0 10px 30px rgba(31,42,55,.14)}
+  .menu-list button{display:block;width:100%;text-align:right;border:none;background:none;padding:8px 12px;border-radius:7px;cursor:pointer}
+  .menu-list button:hover{background:var(--board-l)}
+  .menu-list button.danger{color:var(--bad)}
+  .menu-list button.danger:hover{background:var(--bad-l)}
+  .menu-list hr{border:none;border-top:1px solid var(--line2);margin:5px 4px}
 
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
-  .panel h3{margin:0 0 14px;color:var(--pri);font-size:16px}
-  .set-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-  .set-grid label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted)}
-  .set-grid .hint{font-size:12px;color:#9aa3b0}
-  .set-grid label.switch{flex-direction:row;align-items:center;text-align:right}
-  .switch{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink);background:#fafbfc;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
-  .switch input{width:18px;height:18px}
-  pre.code{direction:ltr;text-align:left;background:#1c2533;color:#e8eef6;padding:12px 14px;border-radius:10px;font-size:13px;overflow:auto;margin:8px 0}
+  /* פירוט נרשמות */
+  .regs{padding:4px 12px 18px 12px;margin-right:102px;animation:open .18s ease-out}
+  @keyframes open{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+  .l-notes{color:var(--muted);font-size:14px;margin:0 0 10px;padding-right:10px;border-right:3px solid var(--chalk)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{text-align:right;font-size:13px;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+  td{padding:8px;border-bottom:1px solid var(--line2);text-align:right}
+  tr.cx td{color:var(--faint)}
+  tr.cx td.nm{text-decoration:line-through}
+  .who{display:flex;align-items:center;gap:9px}
+  .ini{width:28px;height:28px;border-radius:50%;background:var(--board-l);color:var(--board-d);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+  .ltr{direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+  .src{font-size:13px;color:var(--muted)}
+  .addreg{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+  .addreg input{flex:1;min-width:150px}
+  .regs-tools{display:flex;gap:6px;margin-top:12px;flex-wrap:wrap}
+
+  .empty{padding:44px 20px;text-align:center;color:var(--muted)}
+  .empty b{display:block;font:700 20px/1.4 var(--serif);color:var(--ink);margin-bottom:4px}
+  .skel{height:64px;margin:10px 0;border-radius:8px;background:linear-gradient(90deg,var(--line2),#f9fbf9,var(--line2));background-size:200% 100%;animation:sk 1.2s infinite}
+  @keyframes sk{to{background-position:-200% 0}}
+
+  /* ---- טבלאות, טפסים ---- */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:18px}
+  .panel h3{font:700 19px/1.3 var(--serif);margin:0 0 4px}
+  .panel .lead{color:var(--muted);margin:0 0 16px;font-size:15px}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px 16px}
+  .fld{display:flex;flex-direction:column;gap:5px;font-size:14px;font-weight:600}
+  .fld .hint{font-weight:400;color:var(--faint);font-size:13px}
+  .check{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border:1px solid var(--line);border-radius:9px;cursor:pointer;background:#fbfcfb}
+  .check input{width:18px;height:18px;margin-top:2px;accent-color:var(--board)}
+  .check .hint{display:block;color:var(--faint);font-size:13px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips .check{padding:7px 12px}
+  .tablebox{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:auto}
+  .tablebox td,.tablebox th{padding:10px 12px}
   .row-actions{display:flex;gap:5px;flex-wrap:wrap}
-  .badge{font-size:12px;border-radius:20px;padding:2px 10px;background:rgba(255,255,255,.18)}
-  .ok-chip{background:#e6f5ee;color:var(--ok)}
-  #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#1c2533;color:#fff;padding:10px 18px;border-radius:10px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:99}
-  #toast.show{opacity:.95}
+  pre.code{direction:ltr;text-align:left;background:var(--ink);color:#e6ede8;padding:13px 15px;border-radius:9px;font-size:13px;overflow:auto;margin:10px 0}
+  .st-on{color:var(--board);font-weight:700}
+  .st-off{color:var(--faint);font-weight:700}
+
+  dialog{border:none;border-radius:14px;padding:0;width:min(560px,94vw);box-shadow:0 24px 60px rgba(31,42,55,.3)}
+  dialog::backdrop{background:rgba(31,42,55,.5)}
+  .dlg-h{padding:18px 22px 4px;font:700 22px/1.3 var(--serif)}
+  .dlg-b{padding:14px 22px;display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .dlg-b .wide{grid-column:1/-1}
+  .dlg-f{padding:14px 22px 20px;display:flex;gap:8px}
+
+  #toast{position:fixed;bottom:24px;right:50%;transform:translateX(50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 20px;border-radius:9px;opacity:0;transition:.2s;pointer-events:none;z-index:99;font-weight:600}
+  #toast.show{opacity:1;transform:translateX(50%)}
   #toast.bad{background:var(--bad)}
-  .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;vertical-align:middle}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-top-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px}
   @keyframes sp{to{transform:rotate(360deg)}}
+
+  @media (max-width:760px){
+    .head-in{padding:14px 16px 0}
+    main{padding:16px 14px 50px}
+    .l-row{grid-template-columns:62px 1fr;gap:6px 12px;padding:12px 6px}
+    .l-time{font-size:21px}
+    .l-seats{grid-column:2}
+    .l-act{grid-column:1/-1;justify-content:flex-start}
+    .regs{margin-right:0;padding:4px 6px 16px}
+    .regs table th:nth-child(3),.regs table td:nth-child(3),.regs table th:nth-child(4),.regs table td:nth-child(4){display:none}
+    .dlg-b{grid-template-columns:1fr}
+  }
+  @media print{header,.toolbar,.l-act,.addreg,.regs-tools,#toast{display:none!important}}
 </style>
 </head>
 <body>
 
-<!-- כניסה -->
+<!-- ===== כניסה ===== -->
 <div id="login" class="login">
   <div class="login-box">
-    <h2>ניהול אישורי הגעה</h2>
-    <p>נא להקיש קוד מנהל</p>
+    <h1>אישורי הגעה</h1>
+    <p>הקישו את קוד הניהול כדי להיכנס</p>
     <form id="loginForm">
-      <input id="pin" type="password" inputmode="numeric" autocomplete="off" autofocus>
-      <button class="pri" type="submit">כניסה</button>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" aria-label="קוד ניהול" autofocus>
+      <button class="btn pri" type="submit">כניסה</button>
     </form>
-    <div class="err" id="loginErr"></div>
+    <div class="err" id="loginErr" role="alert"></div>
   </div>
 </div>
 
-<!-- אפליקציה -->
+<!-- ===== אפליקציה ===== -->
 <div id="app" hidden>
   <header>
-    <h1 id="sysName">ניהול אישורי הגעה</h1>
-    <span class="badge" id="sysBadge" hidden></span>
-    <span class="upd" id="updated"></span>
-    <button id="refreshBtn">רענון</button>
-    <button id="logoutBtn">יציאה</button>
-  </header>
-  <main>
-    <section class="stats" id="stats"></section>
-
-    <nav class="tabs">
-      <button data-tab="lessons" class="active">שיעורים ואישורים</button>
+    <div class="head-in">
+      <h1 id="sysName">אישורי הגעה</h1>
+      <span class="sys-tag" id="sysBadge" hidden></span>
+      <div class="head-tools">
+        <span class="upd" id="updated"></span>
+        <button class="btn sm" id="refreshBtn">רענון</button>
+        <button class="btn sm" id="logoutBtn">יציאה</button>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button data-tab="lessons" class="active">שיעורים</button>
       <button data-tab="users">משתמשים</button>
       <button data-tab="settings">הגדרות</button>
-      <button data-tab="systems" id="systemsTabBtn" hidden>מערכות (מורות)</button>
+      <button data-tab="systems" id="systemsTabBtn" hidden>מערכות למורות</button>
     </nav>
+  </header>
 
+  <main>
+    <!-- שיעורים -->
     <section id="tab-lessons">
+      <p class="summary" id="summary"></p>
       <div class="toolbar">
-        <select id="filter">
-          <option value="upcoming">שיעורים קרובים</option>
-          <option value="past">שיעורים שעברו</option>
-          <option value="all">כל השיעורים</option>
-        </select>
-        <input id="search" class="grow" type="search" placeholder="חיפוש לפי מורה, נושא, כיתה, שם נרשמת או טלפון…">
-        <button class="pri" id="newLessonBtn">+ שיעור חדש</button>
+        <div class="seg" id="filter" role="group" aria-label="סינון">
+          <button data-f="upcoming" class="on">קרובים</button>
+          <button data-f="past">עברו</button>
+          <button data-f="all">הכול</button>
+        </div>
+        <input id="search" class="search" type="search" placeholder="חיפוש שיעור, מורה, כיתה, נרשמת או טלפון">
+        <button class="btn" id="exportBtn">ייצוא לאקסל</button>
+        <button class="btn pri" id="newLessonBtn">שיעור חדש</button>
       </div>
-      <div id="lessons"></div>
+      <div id="lessons"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
     </section>
 
+    <!-- משתמשים -->
     <section id="tab-users" hidden>
-      <form class="users-form" id="userForm">
-        <input type="tel" id="uPhone" placeholder="טלפון" required>
-        <input type="text" id="uName" placeholder="שם" required>
-        <input type="text" id="uNotes" placeholder="הערות">
-        <label><input type="checkbox" id="uActive" checked> פעיל</label>
-        <button class="pri" type="submit">שמירה</button>
-        <button type="button" id="uClear">ניקוי</button>
+      <form class="panel" id="userForm">
+        <h3>הוספה או עדכון של משתמש</h3>
+        <p class="lead">המערכת מזהה מתקשרים לפי הטלפון ומברכת אותם בשמם.</p>
+        <div class="grid2">
+          <label class="fld">טלפון<input type="tel" id="uPhone" required class="ltr"></label>
+          <label class="fld">שם<input type="text" id="uName" required></label>
+          <label class="fld">הערות<input type="text" id="uNotes"></label>
+          <label class="check" style="align-self:end"><input type="checkbox" id="uActive" checked><span>פעיל</span></label>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn pri" type="submit">שמירת משתמש</button>
+          <button class="btn ghost" type="button" id="uClear">ניקוי הטופס</button>
+        </div>
       </form>
-      <input id="uSearch" type="search" placeholder="חיפוש משתמש…" style="margin-bottom:10px;width:100%">
+      <div class="toolbar"><input id="uSearch" class="search" type="search" placeholder="חיפוש לפי שם או טלפון"></div>
       <div class="tablebox"><table id="usersTable"></table></div>
     </section>
 
+    <!-- הגדרות -->
     <section id="tab-settings" hidden>
       <form class="panel" id="settingsForm">
         <h3>הגדרות המערכת</h3>
-        <div class="set-grid" id="settingsGrid"></div>
-        <div style="margin-top:16px"><button class="pri" type="submit">שמירת הגדרות</button></div>
+        <p class="lead">שינוי שנשמר כאן נקלט בטלפון מהשיחה הבאה.</p>
+        <div id="settingsGrid"><div class="skel"></div></div>
+        <div style="margin-top:18px"><button class="btn pri" type="submit">שמירת הגדרות</button></div>
       </form>
       <div class="panel">
         <h3>חיבור לימות המשיח</h3>
-        <div style="font-size:14px;color:var(--muted)">יש להעתיק את השורות האלה לקובץ <b>ext.ini</b> של השלוחה בימות המשיח:</div>
+        <p class="lead">מעתיקים את השורות לקובץ ext.ini של השלוחה.</p>
         <pre class="code" id="extIni"></pre>
-        <button class="sm" id="copyExt">העתקה</button>
+        <button class="btn sm" id="copyExt">העתקה</button>
       </div>
     </section>
 
+    <!-- מערכות -->
     <section id="tab-systems" hidden>
       <form class="panel" id="tenantForm">
         <h3>מערכת חדשה למורה</h3>
-        <div class="set-grid">
-          <label>שם המערכת<input id="tName" required placeholder="למשל: הגב׳ כהן – סמינר"></label>
-          <label>קוד מערכת (אנגלית/ספרות)<input id="tSys" required dir="ltr" placeholder="cohen1"><span class="hint">משמש בכתובת ובימות המשיח, אי אפשר לשנות אחר כך</span></label>
-          <label>קוד מנהל למורה<input id="tPin" required inputmode="numeric" placeholder="4–10 ספרות"></label>
-          <label>אימייל לשיתוף הגיליון (אופציונלי)<input id="tEmail" type="email" dir="ltr"></label>
+        <p class="lead">נוצר גיליון נפרד, קוד כניסה משלה וקישור ללוח הניהול שלה.</p>
+        <div class="grid2">
+          <label class="fld">שם המערכת<input id="tName" required placeholder="הגב׳ כהן – סמינר"></label>
+          <label class="fld">קוד מערכת<input id="tSys" required class="ltr" placeholder="cohen"><span class="hint">אותיות באנגלית או ספרות. מופיע בקישור ובימות המשיח</span></label>
+          <label class="fld">קוד כניסה למורה<input id="tPin" required inputmode="numeric" placeholder="4–10 ספרות"></label>
+          <label class="fld">אימייל לשיתוף הגיליון<input id="tEmail" type="email" class="ltr"><span class="hint">לא חובה</span></label>
         </div>
-        <div style="margin-top:14px"><button class="pri" type="submit" id="tCreateBtn">יצירת מערכת</button></div>
+        <div style="margin-top:16px"><button class="btn pri" type="submit" id="tCreateBtn">יצירת מערכת</button></div>
       </form>
       <div class="tablebox"><table id="tenantsTable"></table></div>
     </section>
   </main>
 </div>
 
-<!-- חלון שיעור -->
+<!-- ===== חלון שיעור ===== -->
 <dialog id="lessonDlg">
   <form id="lessonForm" method="dialog">
     <div class="dlg-h" id="dlgTitle">שיעור חדש</div>
     <div class="dlg-b">
       <input type="hidden" id="fId">
-      <label>תאריך<input type="date" id="fDate" required></label>
-      <label>שעה<input type="time" id="fTime" required></label>
-      <label class="full">נושא השיעור<input type="text" id="fSubject" required></label>
-      <label>מורה<input type="text" id="fTeacher"></label>
-      <label>כיתה<input type="text" id="fCls"></label>
-      <label>מקום<input type="text" id="fPlace"></label>
-      <label>מכסת צופים (0 = ללא הגבלה)<input type="number" id="fCap" min="0" value="0"></label>
-      <label class="full">הערות<textarea id="fNotes" rows="2"></textarea></label>
-      <label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="fActive" checked> שיעור פעיל (מוצג בטלפון)</label>
+      <label class="fld">תאריך<input type="date" id="fDate" required><span class="hint" id="fDateWarn" style="color:var(--bad)" hidden>התאריך שנבחר הוא שבת</span></label>
+      <label class="fld">שעה<input type="time" id="fTime" required></label>
+      <label class="fld wide">נושא השיעור<input type="text" id="fSubject" required></label>
+      <label class="fld">מורה<input type="text" id="fTeacher"></label>
+      <label class="fld">כיתה<input type="text" id="fCls"></label>
+      <label class="fld">מקום<input type="text" id="fPlace"></label>
+      <label class="fld">מקומות צפייה<input type="number" id="fCap" min="0" value="0"><span class="hint">0 = ללא הגבלה</span></label>
+      <label class="fld wide">הערות<textarea id="fNotes" rows="2"></textarea></label>
+      <label class="check wide"><input type="checkbox" id="fActive" checked><span>פעיל<span class="hint">שיעור לא פעיל לא מוקרא בטלפון</span></span></label>
     </div>
     <div class="dlg-f">
-      <button class="pri" type="submit" id="saveLessonBtn">שמירה</button>
-      <button type="button" id="cancelDlg">ביטול</button>
+      <button class="btn pri" type="submit" id="saveLessonBtn">שמירת שיעור</button>
+      <button class="btn ghost" type="button" id="cancelDlg">ביטול</button>
     </div>
   </form>
 </dialog>
 
 <datalist id="usersList"></datalist>
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /*CONFIG_START*/
@@ -243,15 +324,16 @@ const BASE_URL = 'https://script.google.com/macros/s/AKfycbx9a2GhLO2OHEcQY6_MbSR
 const SYS = (new URLSearchParams(location.search).get('sys') || '').toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 30);
 const DASH_URL = location.origin + location.pathname;
 /*CONFIG_END*/
+
 const $ = s => document.querySelector(s);
 const DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-const ST = { auth:null, isSuper:false, data:null, open:new Set(), busy:false, settings:null };
+const ST = { auth:null, isSuper:false, data:null, open:new Set(), busy:false, settings:null, filter:'upcoming', tenants:[] };
 const PIN_KEY = 'pin_' + (SYS || 'main');
 
-function store(k, v){ try{ v===undefined ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); }catch(e){} }
+/* ---------- עזרים ---------- */
+function store(k, v){ try{ v === undefined ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v); }catch(e){} }
 function load(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } }
-
 function call(fn, ...args){
   // בתוך גוגל: google.script.run | באתר חיצוני: fetch לכתובת הסקריפט
   if (window.google && google.script && google.script.run) {
@@ -271,24 +353,40 @@ function toast(msg, bad){
 function errMsg(e){ return (e && e.message || String(e)).replace(/^Error:\s*/, ''); }
 function fmtPhone(p){ p = String(p||''); return p.length === 10 ? p.slice(0,3)+'-'+p.slice(3) : p.length === 9 ? p.slice(0,2)+'-'+p.slice(2) : p; }
 function dayStart(t){ const d = new Date(t); d.setHours(0,0,0,0); return d.getTime(); }
-function dayLabel(dateKey){
-  const [y,m,d] = dateKey.split('-').map(Number); const dt = new Date(y, m-1, d);
-  return `יום ${DAYS[dt.getDay()]}, ${d} ב${MONTHS[m-1]} ${y}`;
-}
-function relTag(dateKey){
-  const [y,m,d] = dateKey.split('-').map(Number);
-  const diff = Math.round((new Date(y,m-1,d) - dayStart(Date.now())) / 864e5);
+function parseKey(k){ const [y,m,d] = k.split('-').map(Number); return new Date(y, m-1, d); }
+function dayLabel(k){ const d = parseKey(k); return `יום ${DAYS[d.getDay()]}, ${d.getDate()} ב${MONTHS[d.getMonth()]}`; }
+function relTag(k){
+  const diff = Math.round((parseKey(k) - dayStart(Date.now())) / 864e5);
   return diff === 0 ? 'היום' : diff === 1 ? 'מחר' : diff === -1 ? 'אתמול' : '';
 }
-function fmtDT(t){ if(!t) return ''; const d = new Date(t); return `${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`; }
+function hhmm(t){ const d = new Date(t); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); }
+function fmtDT(t){ if(!t) return ''; const d = new Date(t); return `${d.getDate()}/${d.getMonth()+1} ${hhmm(t)}`; }
+function initials(n){ const p = String(n||'').trim().split(/\s+/); return p.length ? (p[0][0] || '') + (p[1] ? p[1][0] : '') : ''; }
+function activeRegs(l){ return l.regs.filter(r => r.status === 'מאושר'); }
+function plural(n, one, many){ return n === 1 ? one : n + ' ' + many; }
+
+/** מריץ פעולה בשרת; הנתונים המעודכנים חוזרים באותה תשובה */
+async function act(fn, args, okMsg, btn){
+  if (btn) btn.disabled = true;
+  ST.busy = true;
+  try {
+    const r = await call(fn, ST.auth, ...args);
+    if (r && r.data) { ST.data = r.data; render(); stamp(); } else await refresh(true);
+    if (okMsg) toast(okMsg);
+    return r;
+  } catch(err){ toast(errMsg(err), true); if (btn) btn.disabled = false; throw err; }
+  finally { ST.busy = false; }
+}
 
 /* ---------- כניסה ---------- */
 $('#loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const pin = $('#pin').value.trim(); if(!pin) return;
+  const b = e.target.querySelector('button'); b.disabled = true; b.innerHTML = '<span class="spin"></span>';
   $('#loginErr').textContent = '';
   try { await login(pin); }
   catch(err){ $('#loginErr').textContent = errMsg(err); }
+  finally { b.disabled = false; b.textContent = 'כניסה'; }
 });
 $('#logoutBtn').onclick = () => { store(PIN_KEY); location.reload(); };
 
@@ -297,7 +395,8 @@ async function login(pin){
   const r = await call('apiLogin', auth);
   ST.auth = auth; ST.isSuper = r.isSuper; store(PIN_KEY, pin);
   $('#systemsTabBtn').hidden = !r.isSuper;
-  if (SYS) { $('#sysBadge').hidden = false; $('#sysBadge').textContent = 'קוד מערכת: ' + SYS; }
+  $('#sysName').textContent = r.name;
+  if (SYS) { $('#sysBadge').hidden = false; $('#sysBadge').textContent = 'קוד מערכת ' + SYS; }
   enter();
 }
 
@@ -305,12 +404,14 @@ async function enter(){
   $('#login').hidden = true; $('#app').hidden = false;
   await refresh();
   setInterval(() => {
-    if (document.hidden || $('#lessonDlg').open || ST.busy) return;
+    if (document.hidden || $('#lessonDlg').open || ST.busy || document.querySelector('.menu-list:not([hidden])')) return;
     const a = document.activeElement;
-    if (a && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && a.closest('.regs, .users-form')) return;
+    if (a && /INPUT|TEXTAREA|SELECT/.test(a.tagName) && a.closest('.regs, #userForm, #settingsForm, #tenantForm')) return;
     refresh(true);
   }, 30000);
 }
+
+function stamp(){ $('#updated').textContent = 'עודכן ' + hhmm(Date.now()); }
 
 async function refresh(silent){
   const btn = $('#refreshBtn');
@@ -318,8 +419,7 @@ async function refresh(silent){
   try {
     ST.data = await call('apiGetData', ST.auth);
     $('#sysName').textContent = ST.data.name;
-    $('#updated').textContent = 'עודכן ' + fmtDT(Date.now()).split(' ')[1];
-    render();
+    stamp(); render();
   } catch(err){
     if (/קוד מנהל שגוי|אינה פעילה/.test(errMsg(err))) { store(PIN_KEY); location.reload(); return; }
     if(!silent) toast(errMsg(err), true);
@@ -328,166 +428,205 @@ async function refresh(silent){
 $('#refreshBtn').onclick = () => refresh();
 
 /* ---------- טאבים ---------- */
-document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
-  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('active', x === b));
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav.tabs button').forEach(x => x.classList.toggle('active', x === b));
   ['lessons','users','settings','systems'].forEach(t => $('#tab-' + t).hidden = b.dataset.tab !== t);
   if (b.dataset.tab === 'settings') loadSettings();
   if (b.dataset.tab === 'systems') loadTenants();
 });
 
-/* ---------- רינדור ---------- */
-function activeRegs(l){ return l.regs.filter(r => r.status === 'מאושר'); }
+/* ---------- שיעורים ---------- */
+function render(){ renderSummary(); renderLessons(); renderUsers(); }
 
-function render(){ renderStats(); renderLessons(); renderUsers(); }
-
-function renderStats(){
-  const now = Date.now(), today = dayStart(now);
-  const up = ST.data.lessons.filter(l => l.active && l.start >= now);
-  const conf = up.reduce((a,l) => a + activeRegs(l).length, 0);
-  const full = up.filter(l => l.capacity && activeRegs(l).length >= l.capacity).length;
-  const todayL = ST.data.lessons.filter(l => l.active && dayStart(l.start) === today);
+function renderSummary(){
+  const now = Date.now(), today = dayStart(now), week = today + 7 * 864e5;
+  const L = ST.data.lessons.filter(l => l.active);
+  const todayL = L.filter(l => dayStart(l.start) === today);
   const todayC = todayL.reduce((a,l) => a + activeRegs(l).length, 0);
-  $('#stats').innerHTML = [
-    [up.length, 'שיעורים קרובים'],
-    [conf, 'אישורי הגעה לשיעורים קרובים'],
-    [todayL.length + ' / ' + todayC, 'שיעורים / צופות היום'],
-    [full, 'שיעורים מלאים']
-  ].map(([v,l]) => `<div class="stat"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+  const weekL = L.filter(l => l.start >= now && l.start < week);
+  const weekC = weekL.reduce((a,l) => a + activeRegs(l).length, 0);
+  const full = L.filter(l => l.start >= now && l.capacity && activeRegs(l).length >= l.capacity).length;
+  $('#summary').innerHTML =
+    `<span>היום <b>${todayL.length}</b> ${todayL.length === 1 ? 'שיעור' : 'שיעורים'}, <b>${todayC}</b> אישרו הגעה</span>` +
+    `<span>בשבוע הקרוב <b>${weekL.length}</b> ${weekL.length === 1 ? 'שיעור' : 'שיעורים'}, <b>${weekC}</b> אישרו</span>` +
+    (full ? `<span class="alert">${full === 1 ? 'שיעור אחד מלא' : full + ' שיעורים מלאים'}</span>` : '');
+}
+
+function filtered(){
+  const f = ST.filter, q = $('#search').value.trim().toLowerCase(), today = dayStart(Date.now());
+  let list = ST.data.lessons.filter(l => f === 'all' ? true : f === 'upcoming' ? dayStart(l.start) >= today : dayStart(l.start) < today);
+  if (q) { const qd = q.replace(/-/g,''); list = list.filter(l =>
+    [l.teacher,l.subject,l.cls,l.place,l.notes].join(' ').toLowerCase().includes(q) ||
+    l.regs.some(r => (r.name + ' ' + r.phone).toLowerCase().includes(qd))); }
+  return list.sort((a,b) => f === 'past' ? b.start - a.start : a.start - b.start);
 }
 
 function renderLessons(){
-  const f = $('#filter').value, q = $('#search').value.trim().toLowerCase();
-  const today = dayStart(Date.now());
-  let list = ST.data.lessons.filter(l =>
-    f === 'all' ? true : f === 'upcoming' ? dayStart(l.start) >= today : dayStart(l.start) < today);
-  if (q) list = list.filter(l =>
-    [l.teacher,l.subject,l.cls,l.place,l.notes].join(' ').toLowerCase().includes(q) ||
-    l.regs.some(r => (r.name + ' ' + r.phone).toLowerCase().includes(q.replace(/-/g,''))));
-  list.sort((a,b) => f === 'past' ? b.start - a.start : a.start - b.start);
-
-  if (!list.length) { $('#lessons').innerHTML = '<div class="empty">לא נמצאו שיעורים</div>'; return; }
-
+  const list = filtered();
+  if (!list.length) {
+    const q = $('#search').value.trim();
+    $('#lessons').innerHTML = q
+      ? `<div class="empty"><b>לא נמצאו שיעורים</b>נסו חיפוש אחר או בחרו "הכול".</div>`
+      : ST.filter === 'past' ? `<div class="empty"><b>אין שיעורים שעברו</b></div>`
+      : `<div class="empty"><b>אין שיעורים קרובים</b>הוסיפו שיעור, והוא יוקרא בטלפון.<br><br><button class="btn pri" onclick="openDlg(null)">שיעור חדש</button></div>`;
+    return;
+  }
   const groups = {};
   list.forEach(l => (groups[l.dateKey] = groups[l.dateKey] || []).push(l));
   $('#lessons').innerHTML = Object.keys(groups).map(k => {
-    const tag = relTag(k);
-    return `<div class="day-head">${dayLabel(k)}${tag ? `<span class="tag">${tag}</span>` : ''}</div>
-            <div class="grid">${groups[k].map(cardHtml).join('')}</div>`;
+    const ls = groups[k], tag = relTag(k);
+    const c = ls.reduce((a,l) => a + activeRegs(l).length, 0);
+    return `<section class="day ${tag === 'היום' ? 'today' : ''}">
+      <div class="day-h"><h2>${dayLabel(k)}</h2>${tag ? `<span class="rel">${tag}</span>` : ''}
+        <span class="sum">${plural(ls.length, 'שיעור אחד', 'שיעורים')}, ${c} אישרו</span></div>
+      ${ls.map(lessonHtml).join('')}</section>`;
   }).join('');
 }
 
-function cardHtml(l){
-  const now = Date.now();
-  const regs = activeRegs(l), n = regs.length;
-  const past = l.start < now;
-  const closed = !past && l.start - (ST.data.closeHours||0) * 36e5 <= now;
-  const full = l.capacity && n >= l.capacity;
-  const pct = l.capacity ? Math.min(100, Math.round(n / l.capacity * 100)) : Math.min(100, n * 5);
-  const barCls = !l.capacity ? '' : pct >= 100 ? 'max' : pct >= 80 ? 'hi' : '';
-  const open = ST.open.has(l.id);
-  const chips = [
-    !l.active && '<span class="chip off">לא פעיל</span>',
-    past && '<span class="chip past">עבר</span>',
-    closed && '<span class="chip closed">הרישום נסגר</span>',
-    full && '<span class="chip full">מלא</span>'
-  ].filter(Boolean).join('');
-  const meta = [l.teacher && 'המורה ' + esc(l.teacher), l.cls && 'כיתה ' + esc(l.cls), l.place && esc(l.place)].filter(Boolean).join(' · ');
+function seatsHtml(l, n){
+  if (!l.capacity) return `<div class="seat-txt"><b>${n}</b> אישרו, ללא הגבלה</div>`;
+  const vis = l.capacity <= 30
+    ? `<div class="seats" aria-hidden="true">${Array.from({length:l.capacity}, (_,i) => `<span class="seat ${i < n ? 'on' : ''}"></span>`).join('')}</div>`
+    : `<div class="seatbar"><i style="width:${Math.min(100, n / l.capacity * 100)}%"></i></div>`;
+  const left = l.capacity - n;
+  return vis + `<div class="seat-txt"><b>${n}</b> מתוך ${l.capacity}${left > 0 ? `, ${left === 1 ? 'נותר מקום אחד' : 'נותרו ' + left}` : ''}</div>`;
+}
 
-  return `<div class="card ${l.active ? '' : 'off'} ${open ? 'open' : ''}" data-id="${esc(l.id)}">
-    <div class="top">
-      <div class="time">${esc(l.time)}</div>
-      <div class="info"><div class="subj">${esc(l.subject || 'ללא נושא')}</div><div class="meta">${meta}</div></div>
-      <div class="chips">${chips}</div>
-    </div>
-    <div class="bar ${barCls}"><div style="width:${pct}%"></div></div>
-    <div class="count"><span><b>${n}</b> ${l.capacity ? 'מתוך ' + l.capacity + ' ' : ''}אישרו הגעה</span>
-      <span>${l.capacity ? (full ? 'אין מקומות פנויים' : 'נותרו ' + (l.capacity - n)) : 'ללא הגבלה'}</span></div>
-    ${l.notes ? `<div class="notes">${esc(l.notes)}</div>` : ''}
-    <div class="actions">
-      <button class="sm ${open ? 'pri' : ''}" data-act="regs">${open ? 'סגירת רשימה' : 'רשימת נרשמות (' + n + ')'}</button>
-      <button class="sm" data-act="edit">עריכה</button>
-      <button class="sm" data-act="toggle">${l.active ? 'השבתה' : 'הפעלה'}</button>
-      <button class="sm" data-act="print">הדפסה</button>
-      <button class="sm danger" data-act="del">מחיקה</button>
+function lessonHtml(l){
+  const now = Date.now(), regs = activeRegs(l), n = regs.length;
+  const past = l.start < now;
+  const closed = !past && l.start - (ST.data.closeHours || 0) * 36e5 <= now;
+  const full = l.capacity && n >= l.capacity;
+  const open = ST.open.has(l.id);
+  const flags = [
+    !l.active && '<span class="flag">לא פעיל</span>',
+    full && '<span class="flag full">מלא</span>',
+    closed && '<span class="flag closed">הרישום נסגר</span>'
+  ].filter(Boolean).join('');
+  const meta = [l.teacher && `המורה ${esc(l.teacher)}`, l.cls && `כיתה ${esc(l.cls)}`, l.place && esc(l.place)]
+    .filter(Boolean).map(x => `<span>${x}</span>`).join('');
+  return `<article class="lesson ${l.active ? '' : 'off'} ${full ? 'isfull' : ''}" data-id="${esc(l.id)}">
+    <div class="l-row">
+      <div class="l-time">${esc(l.time)}</div>
+      <div class="l-main">
+        <div class="l-subj">${esc(l.subject || 'ללא נושא')}${flags ? `<span class="flags">${flags}</span>` : ''}</div>
+        ${meta ? `<div class="l-meta">${meta}</div>` : ''}
+      </div>
+      <div class="l-seats">${seatsHtml(l, n)}</div>
+      <div class="l-act">
+        <button class="btn sm ${open ? 'pri' : ''}" data-act="regs" aria-expanded="${open}">${open ? 'סגירה' : 'נרשמות'}</button>
+        <div class="menu">
+          <button class="btn sm ghost" data-act="menu" aria-label="פעולות נוספות">עוד</button>
+          <div class="menu-list" hidden>
+            <button data-act="edit">עריכה</button>
+            <button data-act="dup">שכפול לשבוע הבא</button>
+            <button data-act="toggle">${l.active ? 'השבתה' : 'הפעלה'}</button>
+            <hr>
+            <button data-act="print">הדפסת רשימה</button>
+            <button data-act="csv">ייצוא לאקסל</button>
+            <hr>
+            <button data-act="del" class="danger">מחיקה</button>
+          </div>
+        </div>
+      </div>
     </div>
     ${open ? regsHtml(l) : ''}
-  </div>`;
+  </article>`;
 }
 
 function regsHtml(l){
   const rows = l.regs.slice().sort((a,b) => (a.status === b.status ? a.created - b.created : a.status === 'מאושר' ? -1 : 1));
   const table = rows.length ? `<table>
-      <tr><th>#</th><th>שם</th><th>טלפון</th><th>נרשמה</th><th>מקור</th><th></th></tr>
-      ${rows.map((r,i) => `<tr class="${r.status === 'מאושר' ? '' : 'cx'}">
-        <td>${i+1}</td><td>${esc(r.name) || '<span style="color:#999">לא ידוע</span>'}</td>
-        <td dir="ltr" style="text-align:right">${esc(fmtPhone(r.phone))}</td><td>${fmtDT(r.created)}</td><td>${esc(r.source)}</td>
-        <td>${r.status === 'מאושר'
-          ? `<button class="sm danger" data-act="cancelReg" data-reg="${esc(r.id)}">ביטול</button>`
-          : `<button class="sm" data-act="restoreReg" data-reg="${esc(r.id)}">שחזור</button>`}</td></tr>`).join('')}
-    </table>` : '<div class="empty" style="padding:12px">עדיין אין נרשמות</div>';
-  return `<div class="regs">${table}
+      <tr><th>שם</th><th>טלפון</th><th>נרשמה</th><th>דרך</th><th></th></tr>
+      ${rows.map(r => `<tr class="${r.status === 'מאושר' ? '' : 'cx'}">
+        <td class="nm"><div class="who"><span class="ini">${esc(initials(r.name) || '?')}</span>${esc(r.name) || '<span class="src">ללא שם</span>'}</div></td>
+        <td class="ltr">${esc(fmtPhone(r.phone))}</td><td>${fmtDT(r.created)}</td><td class="src">${esc(r.source)}</td>
+        <td style="text-align:left">${r.status === 'מאושר'
+          ? `<button class="btn sm ghost danger" data-act="cancelReg" data-reg="${esc(r.id)}">ביטול</button>`
+          : `<button class="btn sm ghost" data-act="restoreReg" data-reg="${esc(r.id)}">החזרה</button>`}</td></tr>`).join('')}
+    </table>` : '<div class="src" style="padding:6px 0 4px">עדיין אין נרשמות לשיעור הזה.</div>';
+  return `<div class="regs">
+    ${l.notes ? `<p class="l-notes">${esc(l.notes)}</p>` : ''}
+    ${table}
     <form class="addreg" data-lesson="${esc(l.id)}">
-      <input type="tel" name="phone" placeholder="טלפון" list="usersList" required>
-      <input type="text" name="name" placeholder="שם (אופציונלי)">
-      <button class="pri sm" type="submit">הוספת נרשמת</button>
+      <input type="tel" name="phone" placeholder="טלפון" list="usersList" class="ltr" required>
+      <input type="text" name="name" placeholder="שם (לא חובה)">
+      <button class="btn pri sm" type="submit">הוספת נרשמת</button>
     </form></div>`;
 }
 
-/* ---------- פעולות על כרטיסים ---------- */
+/* פעולות בשורות */
 $('#lessons').addEventListener('click', async e => {
   const b = e.target.closest('button[data-act]'); if(!b) return;
-  const card = b.closest('.card'); const id = card.dataset.id;
+  const art = b.closest('.lesson'); const id = art && art.dataset.id;
   const l = ST.data.lessons.find(x => x.id === id);
-  const act = b.dataset.act;
-  if (act === 'regs') { ST.open.has(id) ? ST.open.delete(id) : ST.open.add(id); renderLessons(); return; }
-  if (act === 'edit') return openDlg(l);
-  if (act === 'print') return printLesson(l);
-  if (act === 'del' && !confirm('למחוק את השיעור לצמיתות?')) return;
-  if (act === 'cancelReg' && !confirm('לבטל את הרישום?')) return;
-  const map = {
-    toggle: ['apiToggleLesson', id, l.active ? 'השיעור הושבת' : 'השיעור הופעל'],
-    del: ['apiDeleteLesson', id, 'השיעור נמחק'],
-    cancelReg: ['apiCancelRegistration', b.dataset.reg, 'הרישום בוטל'],
-    restoreReg: ['apiRestoreRegistration', b.dataset.reg, 'הרישום שוחזר']
-  };
-  const m = map[act]; if(!m) return;
-  b.disabled = true; ST.busy = true;
-  try { await call(m[0], ST.auth, m[1]); toast(m[2]); await refresh(true); }
-  catch(err){ toast(errMsg(err), true); b.disabled = false; }
-  finally { ST.busy = false; }
+  const a = b.dataset.act;
+  if (a === 'menu') { const m = b.nextElementSibling; const was = m.hidden; closeMenus(); m.hidden = !was; return; }
+  closeMenus();
+  if (a === 'regs') { ST.open.has(id) ? ST.open.delete(id) : ST.open.add(id); renderLessons();
+    if (ST.open.has(id)) { const f = document.querySelector(`.lesson[data-id="${CSS.escape(id)}"] .addreg input`); f && f.focus({preventScroll:true}); } return; }
+  if (a === 'edit') return openDlg(l);
+  if (a === 'print') return printLesson(l);
+  if (a === 'csv') return exportCsv([l], 'נרשמות - ' + l.subject);
+  try {
+    if (a === 'dup') await act('apiDuplicateLesson', [id, 7], 'השיעור שוכפל לשבוע הבא');
+    if (a === 'toggle') await act('apiToggleLesson', [id], l.active ? 'השיעור הושבת' : 'השיעור הופעל');
+    if (a === 'del' && confirm('למחוק את השיעור "' + l.subject + '"?')) await act('apiDeleteLesson', [id], 'השיעור נמחק');
+    if (a === 'cancelReg' && confirm('לבטל את הרישום?')) await act('apiCancelRegistration', [b.dataset.reg], 'הרישום בוטל', b);
+    if (a === 'restoreReg') await act('apiRestoreRegistration', [b.dataset.reg], 'הרישום הוחזר', b);
+  } catch(err){}
 });
+function closeMenus(){ document.querySelectorAll('.menu-list').forEach(m => m.hidden = true); }
+document.addEventListener('click', e => { if (!e.target.closest('.menu')) closeMenus(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenus(); });
 
 $('#lessons').addEventListener('submit', async e => {
   const f = e.target.closest('form.addreg'); if(!f) return;
   e.preventDefault();
-  const btn = f.querySelector('button'); btn.disabled = true; ST.busy = true;
-  try {
-    await call('apiAddRegistration', ST.auth, f.dataset.lesson, f.phone.value, f.name.value);
-    toast('הנרשמת נוספה'); await refresh(true);
-  } catch(err){ toast(errMsg(err), true); btn.disabled = false; }
-  finally { ST.busy = false; }
+  try { await act('apiAddRegistration', [f.dataset.lesson, f.phone.value, f.name.value], 'הנרשמת נוספה', f.querySelector('button')); } catch(err){}
 });
-
 $('#lessons').addEventListener('input', e => {
   if (e.target.name !== 'phone') return;
-  const p = e.target.value.replace(/\D/g,'');
-  const u = ST.data.users.find(x => x.phone === p);
-  const nm = e.target.form.name;
-  if (u && !nm.value) nm.value = u.name;
+  const u = ST.data.users.find(x => x.phone === e.target.value.replace(/\D/g,''));
+  const nm = e.target.form.name; if (u && !nm.value) nm.value = u.name;
 });
 
-$('#filter').onchange = renderLessons;
+$('#filter').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  ST.filter = b.dataset.f;
+  $('#filter').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  renderLessons();
+});
 $('#search').oninput = renderLessons;
+$('#exportBtn').onclick = () => exportCsv(filtered(), 'אישורי הגעה');
+
+/* ייצוא לאקסל (CSV עם תמיכה בעברית) */
+function exportCsv(lessons, name){
+  const rows = [['תאריך','שעה','נושא','מורה','כיתה','מקום','שם','טלפון','נרשמה','דרך','סטטוס']];
+  lessons.forEach(l => {
+    const d = parseKey(l.dateKey); const date = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+    const regs = l.regs.length ? l.regs : [null];
+    regs.forEach(r => rows.push([date, l.time, l.subject, l.teacher, l.cls, l.place,
+      r ? r.name : '', r ? fmtPhone(r.phone) : '', r ? fmtDT(r.created) : '', r ? r.source : '', r ? r.status : 'אין נרשמות']));
+  });
+  const csv = '﻿' + rows.map(r => r.map(v => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv;charset=utf-8' }));
+  a.download = name.replace(/[\\/:*?"<>|]/g,'') + '.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  toast('הקובץ ירד למחשב');
+}
 
 function printLesson(l){
   const regs = activeRegs(l).sort((a,b) => a.created - b.created);
   const w = window.open('', '_blank');
-  if (!w) { toast('הדפדפן חסם חלון קופץ', true); return; }
-  w.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>רשימת נרשמות</title>
-    <style>body{font-family:Arial;padding:24px}table{width:100%;border-collapse:collapse}td,th{border:1px solid #999;padding:6px;text-align:right}</style></head><body>
-    <h2>${esc(l.subject)}</h2>
-    <p>${dayLabel(l.dateKey)} · ${esc(l.time)}${l.teacher ? ' · המורה ' + esc(l.teacher) : ''}${l.cls ? ' · כיתה ' + esc(l.cls) : ''}${l.place ? ' · ' + esc(l.place) : ''}</p>
-    <p>סה"כ ${regs.length} נרשמות${l.capacity ? ' מתוך ' + l.capacity : ''}</p>
+  if (!w) { toast('הדפדפן חסם את חלון ההדפסה. אפשרו חלונות קופצים לאתר', true); return; }
+  w.document.write(`<html dir="rtl"><head><meta charset="utf-8"><title>${esc(l.subject)}</title>
+    <style>body{font-family:Arial;padding:28px;color:#1f2a37}h1{margin:0 0 4px}p{margin:0 0 18px;color:#555}
+    table{width:100%;border-collapse:collapse}td,th{border:1px solid #bbb;padding:8px;text-align:right}th{background:#eef2ee}td:last-child{width:110px}</style></head><body>
+    <h1>${esc(l.subject)}</h1>
+    <p>${dayLabel(l.dateKey)}, ${esc(l.time)}${l.teacher ? ', המורה ' + esc(l.teacher) : ''}${l.cls ? ', כיתה ' + esc(l.cls) : ''}${l.place ? ', ' + esc(l.place) : ''}<br>
+    ${regs.length} נרשמות${l.capacity ? ' מתוך ' + l.capacity + ' מקומות' : ''}</p>
     <table><tr><th>#</th><th>שם</th><th>טלפון</th><th>נוכחות</th></tr>
     ${regs.map((r,i) => `<tr><td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(fmtPhone(r.phone))}</td><td></td></tr>`).join('')}
     </table><script>window.print()<\/script></body></html>`);
@@ -497,8 +636,10 @@ function printLesson(l){
 /* ---------- חלון שיעור ---------- */
 function openDlg(l){
   $('#dlgTitle').textContent = l ? 'עריכת שיעור' : 'שיעור חדש';
+  $('#saveLessonBtn').textContent = l ? 'שמירת שינויים' : 'הוספת שיעור';
+  const tmr = new Date(Date.now() + 864e5);
   $('#fId').value = l ? l.id : '';
-  $('#fDate').value = l ? l.dateKey : new Date(Date.now() + 864e5).toISOString().slice(0,10);
+  $('#fDate').value = l ? l.dateKey : `${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;
   $('#fTime').value = l ? l.time : '08:30';
   $('#fSubject').value = l ? l.subject : '';
   $('#fTeacher').value = l ? l.teacher : '';
@@ -507,22 +648,25 @@ function openDlg(l){
   $('#fCap').value = l ? l.capacity : 0;
   $('#fNotes').value = l ? l.notes : '';
   $('#fActive').checked = l ? l.active : true;
+  checkDate();
   $('#lessonDlg').showModal();
+  $('#fSubject').focus();
 }
+function checkDate(){ const v = $('#fDate').value; $('#fDateWarn').hidden = !v || parseKey(v).getDay() !== 6; }
+$('#fDate').addEventListener('input', checkDate);
 $('#newLessonBtn').onclick = () => openDlg(null);
 $('#cancelDlg').onclick = () => $('#lessonDlg').close();
 $('#lessonForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const btn = $('#saveLessonBtn'); btn.disabled = true;
   const L = {
     id: $('#fId').value, dateKey: $('#fDate').value, time: $('#fTime').value,
     subject: $('#fSubject').value.trim(), teacher: $('#fTeacher').value.trim(),
     cls: $('#fCls').value.trim(), place: $('#fPlace').value.trim(),
     capacity: Number($('#fCap').value) || 0, notes: $('#fNotes').value.trim(), active: $('#fActive').checked
   };
-  try { await call('apiSaveLesson', ST.auth, L); $('#lessonDlg').close(); toast('השיעור נשמר'); await refresh(true); }
-  catch(err){ toast(errMsg(err), true); }
-  finally { btn.disabled = false; }
+  const btn = $('#saveLessonBtn');
+  try { await act('apiSaveLesson', [L], L.id ? 'השינויים נשמרו' : 'השיעור נוסף', btn); $('#lessonDlg').close(); } catch(err){}
+  btn.disabled = false;
 });
 
 /* ---------- משתמשים ---------- */
@@ -532,51 +676,49 @@ function renderUsers(){
   $('#usersList').innerHTML = ST.data.users.map(u => `<option value="${esc(u.phone)}">${esc(u.name)}</option>`).join('');
   const counts = {};
   ST.data.lessons.forEach(l => activeRegs(l).forEach(r => counts[r.phone] = (counts[r.phone]||0) + 1));
-  $('#usersTable').innerHTML = `<tr><th>שם</th><th>טלפון</th><th>סה"כ רישומים</th><th>פעיל</th><th>הערות</th><th></th></tr>` +
+  $('#usersTable').innerHTML = `<tr><th>שם</th><th>טלפון</th><th>רישומים</th><th>מצב</th><th>הערות</th><th></th></tr>` +
     (users.length ? users.map(u => `<tr>
-      <td>${esc(u.name)}</td><td dir="ltr" style="text-align:right">${esc(fmtPhone(u.phone))}</td>
-      <td>${counts[u.phone] || 0}</td><td>${u.active ? '✓' : '—'}</td><td>${esc(u.notes)}</td>
-      <td><button class="sm" data-uedit="${esc(u.phone)}">עריכה</button>
-          <button class="sm danger" data-udel="${esc(u.phone)}">מחיקה</button></td></tr>`).join('')
-      : '<tr><td colspan="6" class="empty">אין משתמשים</td></tr>');
+      <td><div class="who"><span class="ini">${esc(initials(u.name) || '?')}</span>${esc(u.name) || '<span class="src">ללא שם</span>'}</div></td>
+      <td class="ltr">${esc(fmtPhone(u.phone))}</td>
+      <td>${counts[u.phone] || 0}</td><td>${u.active ? '<span class="st-on">פעיל</span>' : '<span class="st-off">לא פעיל</span>'}</td><td class="src">${esc(u.notes)}</td>
+      <td><div class="row-actions"><button class="btn sm ghost" data-uedit="${esc(u.phone)}">עריכה</button>
+          <button class="btn sm ghost danger" data-udel="${esc(u.phone)}">מחיקה</button></div></td></tr>`).join('')
+      : `<tr><td colspan="6"><div class="empty"><b>${q ? 'לא נמצאו משתמשים' : 'עדיין אין משתמשים'}</b>${q ? '' : 'מוסיפים משתמש בטופס שלמעלה, או שהמערכת מוסיפה אותם לבד דרך הזיהוי הקולי.'}</div></td></tr>`);
 }
 $('#uSearch').oninput = renderUsers;
 $('#uClear').onclick = () => { $('#userForm').reset(); $('#uActive').checked = true; };
 $('#userForm').addEventListener('submit', async e => {
   e.preventDefault();
   try {
-    await call('apiSaveUser', ST.auth, { phone: $('#uPhone').value, name: $('#uName').value.trim(), notes: $('#uNotes').value.trim(), active: $('#uActive').checked });
-    toast('המשתמש נשמר'); $('#uClear').click(); await refresh(true);
-  } catch(err){ toast(errMsg(err), true); }
+    await act('apiSaveUser', [{ phone: $('#uPhone').value, name: $('#uName').value.trim(), notes: $('#uNotes').value.trim(), active: $('#uActive').checked }], 'המשתמש נשמר', e.submitter);
+    $('#uClear').click(); if (e.submitter) e.submitter.disabled = false;
+  } catch(err){}
 });
 $('#usersTable').addEventListener('click', async e => {
   const ed = e.target.closest('[data-uedit]'), del = e.target.closest('[data-udel]');
   if (ed) {
     const u = ST.data.users.find(x => x.phone === ed.dataset.uedit);
     $('#uPhone').value = u.phone; $('#uName').value = u.name; $('#uNotes').value = u.notes; $('#uActive').checked = u.active;
-    $('#uName').focus();
+    $('#userForm').scrollIntoView({ behavior:'smooth', block:'start' }); $('#uName').focus({preventScroll:true});
   }
-  if (del && confirm('למחוק את המשתמש?')) {
-    try { await call('apiDeleteUser', ST.auth, del.dataset.udel); toast('המשתמש נמחק'); await refresh(true); }
-    catch(err){ toast(errMsg(err), true); }
-  }
+  if (del && confirm('למחוק את המשתמש?')) { try { await act('apiDeleteUser', [del.dataset.udel], 'המשתמש נמחק'); } catch(err){} }
 });
 
 /* ---------- הגדרות ---------- */
 const SETTING_META = {
   'שם המערכת': { type:'text', hint:'מוקרא בפתיחת השיחה' },
-  'קוד מנהל': { type:'pin', hint:'4–10 ספרות. משמש לכניסה ללוח ולתפריט הניהול בטלפון (מקש 9)' },
-  'טלפונים של מנהלים': { type:'text', hint:'נכנסים לתפריט הניהול בטלפון בלי קוד. להפריד בפסיק', ltr:true },
+  'קוד מנהל': { type:'pin', hint:'4–10 ספרות. לכניסה ללוח ולתפריט הניהול בטלפון (מקש 9)' },
+  'טלפונים של מנהלים': { type:'text', hint:'נכנסים לתפריט הניהול בטלפון בלי קוד. מפרידים בפסיק', ltr:true },
   'ימים קדימה להצגה': { type:'number', hint:'כמה ימים קדימה יוקראו שיעורים בטלפון' },
   'סגירת רישום (שעות לפני השיעור)': { type:'number', hint:'0 = אפשר להירשם עד תחילת השיעור' },
-  'בקשת שם בזיהוי קולי': { type:'bool', label:'בקשת שם ממתקשרים חדשים בזיהוי קולי', hint:'דורש יתרת זיהוי דיבור בימות המשיח. כבו אם אין יחידות' },
-  'רק משתמשים רשומים': { type:'bool', label:'רק משתמשים רשומים יכולים להירשם', hint:'מספרים שאינם ברשימת המשתמשים יקבלו הודעה וינותקו' },
-  'אפשר ביטול בטלפון': { type:'bool', label:'אפשר ביטול רישום בטלפון' },
+  'בקשת שם בזיהוי קולי': { type:'bool', label:'לבקש ממתקשרים חדשים לומר את שמם', hint:'דורש יתרת זיהוי דיבור בימות המשיח. כבו אם אין יחידות' },
+  'רק משתמשים רשומים': { type:'bool', label:'רק משתמשים רשומים יכולים להירשם', hint:'מספר שלא ברשימת המשתמשים יקבל הודעה וינותק' },
+  'אפשר ביטול בטלפון': { type:'bool', label:'אפשר לבטל רישום בטלפון' },
   'הקראת נושא': { type:'bool', group:'speak', label:'נושא' },
   'הקראת מורה': { type:'bool', group:'speak', label:'מורה' },
   'הקראת כיתה': { type:'bool', group:'speak', label:'כיתה' },
   'הקראת מקום': { type:'bool', group:'speak', label:'מקום' },
-  'הקראת מקומות פנויים': { type:'bool', group:'speak', label:'מספר מקומות פנויים' }
+  'הקראת מקומות פנויים': { type:'bool', group:'speak', label:'מקומות פנויים' }
 };
 
 async function loadSettings(){
@@ -584,18 +726,21 @@ async function loadSettings(){
   try {
     const rows = await call('apiGetSettings', ST.auth);
     ST.settings = Object.fromEntries(rows);
-    const speak = rows.filter(([k]) => (SETTING_META[k] || {}).group === 'speak');
-    $('#settingsGrid').innerHTML = rows.filter(([k]) => (SETTING_META[k] || {}).group !== 'speak').map(([k, v]) => {
-      const m = SETTING_META[k] || { type:'text' };
-      const id = 'set_' + Object.keys(SETTING_META).indexOf(k);
-      const hint = m.hint ? `<span class="hint">${esc(m.hint)}</span>` : '';
-      if (m.type === 'bool') return `<label class="switch" style="grid-column:1/-1"><input type="checkbox" data-key="${esc(k)}" ${v === 'כן' ? 'checked' : ''}>
-        <span>${esc(m.label || k)}<br>${hint}</span></label>`;
-      const t = m.type === 'number' ? 'type="number" min="0"' : m.type === 'pin' ? 'inputmode="numeric"' : 'type="text"';
-      return `<label>${esc(k)}<input ${t} data-key="${esc(k)}" value="${esc(v)}" ${m.ltr ? 'dir="ltr"' : ''}>${hint}</label>`;
-    }).join('') + `<div style="grid-column:1/-1"><div style="font-size:13px;color:var(--muted);margin-bottom:6px">מה להקריא על כל שיעור בטלפון (תאריך ושעה מוקראים תמיד; שדה ריק מדולג)</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">${speak.map(([k, v]) =>
-        `<label class="switch" style="padding:8px 12px"><input type="checkbox" data-key="${esc(k)}" ${v === 'כן' ? 'checked' : ''}><span>${esc(SETTING_META[k].label)}</span></label>`).join('')}</div></div>`;
+    const meta = k => SETTING_META[k] || { type:'text' };
+    const fields = rows.filter(([k]) => meta(k).type !== 'bool');
+    const bools = rows.filter(([k]) => meta(k).type === 'bool' && meta(k).group !== 'speak');
+    const speak = rows.filter(([k]) => meta(k).group === 'speak');
+    const chk = ([k, v], cls) => `<label class="check ${cls||''}"><input type="checkbox" data-key="${esc(k)}" ${v === 'כן' ? 'checked' : ''}>
+        <span>${esc(meta(k).label || k)}${meta(k).hint ? `<span class="hint">${esc(meta(k).hint)}</span>` : ''}</span></label>`;
+    $('#settingsGrid').innerHTML =
+      `<div class="grid2">${fields.map(([k, v]) => {
+        const m = meta(k);
+        const t = m.type === 'number' ? 'type="number" min="0"' : m.type === 'pin' ? 'inputmode="numeric"' : 'type="text"';
+        return `<label class="fld">${esc(k)}<input ${t} data-key="${esc(k)}" value="${esc(v)}" ${m.ltr ? 'class="ltr"' : ''}>${m.hint ? `<span class="hint">${esc(m.hint)}</span>` : ''}</label>`;
+      }).join('')}</div>
+      <div class="grid2" style="margin-top:16px">${bools.map(r => chk(r)).join('')}</div>
+      <div style="margin-top:20px"><div class="fld" style="margin-bottom:8px">מה להקריא על כל שיעור<span class="hint">תאריך ושעה מוקראים תמיד. שדה ריק מדולג</span></div>
+        <div class="chips">${speak.map(r => chk(r)).join('')}</div></div>`;
   } catch(err){ toast(errMsg(err), true); }
 }
 $('#settingsForm').addEventListener('submit', async e => {
@@ -604,50 +749,45 @@ $('#settingsForm').addEventListener('submit', async e => {
   $('#settingsGrid').querySelectorAll('[data-key]').forEach(el => {
     obj[el.dataset.key] = el.type === 'checkbox' ? (el.checked ? 'כן' : 'לא') : el.value.trim();
   });
+  const btn = e.submitter; if (btn) btn.disabled = true;
   try {
     await call('apiSaveSettings', ST.auth, obj);
-    if (obj['קוד מנהל'] && ST.auth.pin === ST.settings['קוד מנהל']) {
-      ST.auth.pin = obj['קוד מנהל']; store(PIN_KEY, ST.auth.pin);
-    }
-    toast('ההגדרות נשמרו'); refresh(true);
+    if (obj['קוד מנהל'] && ST.auth.pin === ST.settings['קוד מנהל']) { ST.auth.pin = obj['קוד מנהל']; store(PIN_KEY, ST.auth.pin); }
+    ST.settings = obj; toast('ההגדרות נשמרו'); refresh(true);
   } catch(err){ toast(errMsg(err), true); }
+  finally { if (btn) btn.disabled = false; }
 });
 $('#copyExt').onclick = () => copyText($('#extIni').textContent);
 function copyText(t){
-  navigator.clipboard && navigator.clipboard.writeText(t).then(() => toast('הועתק'), () => toast('לא ניתן להעתיק אוטומטית – יש לסמן ולהעתיק', true));
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+    .then(() => toast('הועתק'), () => toast('ההעתקה נחסמה. סמנו את הטקסט והעתיקו ידנית', true));
 }
 
-/* ---------- מערכות (מנהל ראשי) ---------- */
+/* ---------- מערכות למורות (מנהל ראשי) ---------- */
 async function loadTenants(){
-  $('#tenantsTable').innerHTML = '<tr><td class="empty">טוען…</td></tr>';
+  $('#tenantsTable').innerHTML = '<tr><td><div class="skel"></div></td></tr>';
   try {
     const list = await call('apiListTenants', ST.auth);
-    $('#tenantsTable').innerHTML = `<tr><th>שם</th><th>קוד מערכת</th><th>קוד מנהל</th><th>שיעורים</th><th>סטטוס</th><th>קישורים</th><th></th></tr>` +
-      (list.length ? list.map(t => {
-        const url = DASH_URL + '?sys=' + encodeURIComponent(t.sys);
-        return `<tr data-sys="${esc(t.sys)}">
-          <td><b>${esc(t.name)}</b>${t.email ? `<div style="font-size:12px;color:var(--muted)" dir="ltr">${esc(t.email)}</div>` : ''}${t.err ? `<div style="color:var(--bad);font-size:12px">${esc(t.err)}</div>` : ''}</td>
-          <td dir="ltr" style="text-align:right">${esc(t.sys)}</td>
-          <td>${esc(t.pin)}</td>
-          <td>${t.lessons}</td>
-          <td>${t.active ? '<span class="chip ok-chip">פעיל</span>' : '<span class="chip off">מושבת</span>'}</td>
-          <td><div class="row-actions">
-            <a href="${esc(url)}" target="_blank"><button class="sm" type="button">לוח הניהול שלה</button></a>
-            ${t.sheetUrl ? `<a href="${esc(t.sheetUrl)}" target="_blank"><button class="sm" type="button">גיליון</button></a>` : ''}
-          </div></td>
-          <td><div class="row-actions">
-            <button class="sm" data-t="link">העתקת קישור</button>
-            <button class="sm" data-t="ext">העתקת ext.ini</button>
-            <button class="sm" data-t="pin">החלפת קוד</button>
-            <button class="sm ${t.active ? 'danger' : ''}" data-t="toggle">${t.active ? 'השבתה' : 'הפעלה'}</button>
-          </div></td></tr>`;
-      }).join('') : '<tr><td colspan="7" class="empty">עדיין אין מערכות</td></tr>');
     ST.tenants = list;
+    $('#tenantsTable').innerHTML = `<tr><th>מורה</th><th>קוד מערכת</th><th>קוד כניסה</th><th>שיעורים</th><th>מצב</th><th></th></tr>` +
+      (list.length ? list.map(t => `<tr data-sys="${esc(t.sys)}">
+          <td><b>${esc(t.name)}</b>${t.email ? `<div class="src ltr">${esc(t.email)}</div>` : ''}${t.err ? `<div style="color:var(--bad);font-size:13px">${esc(t.err)}</div>` : ''}</td>
+          <td class="ltr">${esc(t.sys)}</td><td class="ltr">${esc(t.pin)}</td><td>${t.lessons}</td>
+          <td>${t.active ? '<span class="st-on">פעילה</span>' : '<span class="st-off">מושבתת</span>'}</td>
+          <td><div class="row-actions">
+            <a class="btn sm" href="${esc(DASH_URL + '?sys=' + encodeURIComponent(t.sys))}" target="_blank" style="text-decoration:none">פתיחת הלוח</a>
+            ${t.sheetUrl ? `<a class="btn sm ghost" href="${esc(t.sheetUrl)}" target="_blank" style="text-decoration:none">גיליון</a>` : ''}
+            <button class="btn sm ghost" data-t="link">העתקת קישור</button>
+            <button class="btn sm ghost" data-t="ext">העתקת ext.ini</button>
+            <button class="btn sm ghost" data-t="pin">קוד חדש</button>
+            <button class="btn sm ghost ${t.active ? 'danger' : ''}" data-t="toggle">${t.active ? 'השבתה' : 'הפעלה'}</button>
+          </div></td></tr>`).join('')
+        : '<tr><td colspan="6"><div class="empty"><b>עדיין אין מערכות</b>יוצרים מערכת ראשונה בטופס שלמעלה.</div></td></tr>');
   } catch(err){ toast(errMsg(err), true); }
 }
 $('#tenantForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const btn = $('#tCreateBtn'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span> יוצר…';
+  const btn = $('#tCreateBtn'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span> יוצר מערכת';
   try {
     const r = await call('apiCreateTenant', ST.auth, { name: $('#tName').value, sys: $('#tSys').value, pin: $('#tPin').value, email: $('#tEmail').value });
     toast('המערכת נוצרה' + (r.note ? ' (' + r.note + ')' : ''));
@@ -659,17 +799,17 @@ $('#tSys').addEventListener('input', e => e.target.value = e.target.value.toLowe
 $('#tenantsTable').addEventListener('click', async e => {
   const b = e.target.closest('button[data-t]'); if(!b) return;
   const sys = b.closest('tr').dataset.sys; const t = ST.tenants.find(x => x.sys === sys);
-  const url = DASH_URL + '?sys=' + encodeURIComponent(sys);
-  if (b.dataset.t === 'link') return copyText(url);
+  if (b.dataset.t === 'link') return copyText(DASH_URL + '?sys=' + encodeURIComponent(sys));
   if (b.dataset.t === 'ext') return copyText('type=api\napi_link=' + BASE_URL + '\napi_add_0=sys=' + sys + '\napi_hangup_send=yes');
   let changes;
-  if (b.dataset.t === 'pin') { const p = prompt('קוד מנהל חדש למערכת "' + t.name + '" (4–10 ספרות):'); if (!p) return; changes = { pin: p.trim() }; }
+  if (b.dataset.t === 'pin') { const p = prompt('קוד כניסה חדש ל"' + t.name + '" (4–10 ספרות):'); if (!p) return; changes = { pin: p.trim() }; }
   if (b.dataset.t === 'toggle') {
-    if (t.active && !confirm('להשבית את "' + t.name + '"? הטלפון והלוח שלה יפסיקו לעבוד עד להפעלה מחדש')) return;
+    if (t.active && !confirm('להשבית את "' + t.name + '"? הטלפון והלוח שלה יפסיקו לעבוד עד שתפעילו אותה מחדש.')) return;
     changes = { active: !t.active };
   }
-  try { await call('apiUpdateTenant', ST.auth, sys, changes); toast('עודכן'); loadTenants(); }
-  catch(err){ toast(errMsg(err), true); }
+  b.disabled = true;
+  try { await call('apiUpdateTenant', ST.auth, sys, changes); toast(b.dataset.t === 'pin' ? 'הקוד הוחלף' : changes.active ? 'המערכת הופעלה' : 'המערכת הושבתה'); loadTenants(); }
+  catch(err){ toast(errMsg(err), true); b.disabled = false; }
 });
 
 /* ---------- התחלה ---------- */
